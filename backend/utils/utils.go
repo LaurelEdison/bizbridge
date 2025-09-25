@@ -23,3 +23,11 @@ func GetDBUrl(logger *zap.Logger) (string, error) {
 	}
 	return dbUrl, nil
 }
+
+func CreatePasswordHash(password string) string {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return "", err
+	}
+	return string(bytes), err
+}
