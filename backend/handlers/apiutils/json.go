@@ -17,3 +17,20 @@ func RespondWithJSON(logger *zap.Logger, w http.ResponseWriter, code int, payloa
 
 }
 
+func RespondWithError(logger *zap.Logger, w http.ResponseWriter,
+	code int, msg string) {
+	if code > 499 {
+		logger.Error("Responding with server error",
+			zap.Int("code", code), zap.String("message", msg))
+	} else {
+		logger.Warn("Responding with client error",
+			zap.Int("code", code), zap.String("message", msg))
+	}
+
+	type errResponse struct {
+		Error string `json:"error"`
+	}
+
+	RespondWithJSON(logger, w, code, errResponse{Error: msg})
+
+}
