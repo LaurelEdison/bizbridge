@@ -12,6 +12,7 @@ func SetupRoutes(h *handlers.Handlers, router chi.Router) {
 	router.Get("/healthz", healthz.HandlerHealth(h))
 }
 
+// TODO: Change to less permissive in prod
 func SetupCors(zapLogger *zap.Logger, router chi.Router) {
 	router.Use(cors.Handler(cors.Options{
 		AllowedOrigins:   []string{"https://*", "http://*"}, // Allow all origins for dev
