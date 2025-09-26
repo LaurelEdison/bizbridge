@@ -43,3 +43,32 @@ func NewServer(zapLogger *zap.Logger) *http.Server {
 
 }
 
+func Run() error {
+	if err := godotenv.Load(".env"); err != nil {
+		log.Fatalf("Failed to load .env : %v", err)
+	}
+
+	zapLogger, err := zap.NewProduction()
+	if err != nil {
+		return fmt.Errorf("error starting logger: %v", err)
+	}
+	defer func() {
+		if err := zapLogger.Sync(); err != nil && !strings.Contains(err.Error(), "already closed") {
+			fmt.Fprintf(os.Stderr, "error syncing logger: %v", err)
+		}
+	}()
+
+	srv := NewServer(zapLogger)
+	err = srv.ListenAndServe()
+	if err != nil && err != http.ErrServerClosed {
+		zapLogger.Error("Failed to start http server", zap.Error(err))
+	}
+
+	return err
+}
+
+// TODO: Refactor main to cmd file
+func main() {
+	err := Run()
+	fmt.Printf("%v", err)
+}
