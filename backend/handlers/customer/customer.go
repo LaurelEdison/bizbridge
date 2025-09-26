@@ -51,3 +51,31 @@ func CreateCustomer(h *handlers.Handlers) http.HandlerFunc {
 		apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, handlers.DatabaseCustomerToCustomer(customer))
 	}
 }
+
+func GetCustomerByID(h *handlers.Handlers) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		customerIDStr := chi.URLParam(r, "id")
+		customerID, err := uuid.Parse(customerIDStr)
+		if err != nil {
+			apiutils.RespondWithError(h.ZapLogger, w, http.StatusBadRequest, "Error parsign string")
+			return
+		}
+
+		customer, err := h.DB.GetCustomerByID(r.Context(), customerID)
+		if err != nil {
+			apiutils.RespondWithError(h.ZapLogger, w, http.StatusInternalServerError, "Could not get customer by id")
+		}
+		apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, handlers.DatabaseCustomerToCustomer(customer))
+	}
+}
+func GetCustomerByEmail(h *handlers.Handlers) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		Email := chi.URLParam(r, "email")
+		customer, err := h.DB.GetCustomerByEmail(r.Context(), Email)
+		if err != nil {
+			apiutils.RespondWithError(h.ZapLogger, w, http.StatusInternalServerError, "Could not get customer by email")
+			return
+		}
+		apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, handlers.DatabaseCustomerToCustomer(customer))
+	}
+}
