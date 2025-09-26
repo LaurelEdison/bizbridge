@@ -40,7 +40,7 @@ func CreateCustomer(h *handlers.Handlers) http.HandlerFunc {
 			ID:           uuid.New(),
 			Name:         params.Name,
 			PasswordHash: hashedPassword,
-			Email:        params.Email,
+			Email:        strings.ToLower(params.Email),
 			Country:      params.Country,
 			Description:  sql.NullString{String: params.Description},
 			CreatedAt:    time.Now(),
