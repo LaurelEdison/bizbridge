@@ -10,6 +10,7 @@ import (
 	"github.com/LaurelEdison/bizbridge/handlers/apiutils"
 	"github.com/LaurelEdison/bizbridge/internal/database"
 	"github.com/LaurelEdison/bizbridge/utils"
+	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
 )
 
