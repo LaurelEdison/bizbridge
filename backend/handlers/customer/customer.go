@@ -80,3 +80,58 @@ func GetCustomerByEmail(h *handlers.Handlers) http.HandlerFunc {
 		apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, handlers.DatabaseCustomerToCustomer(customer))
 	}
 }
+
+func UpdateCustomerDetails(h *handlers.Handlers) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		type Parameters struct {
+			Name        *string   `json:"name"`
+			Country     *string   `json:"country"`
+			Description *string   `json:"description"`
+			Id          uuid.UUID `json:"id"` //TODO: Pass uid params through auth function
+		}
+		params := &Parameters{}
+		decoder := json.NewDecoder(r.Body)
+		err := decoder.Decode(&params)
+		if err != nil {
+			apiutils.RespondWithError(h.ZapLogger, w, http.StatusBadRequest, "Could not decode json")
+			return
+		}
+
+		if params.Name != nil {
+			err := h.DB.UpdateCustomerName(r.Context(), database.UpdateCustomerNameParams{
+				ID:        params.Id,
+				Name:      *params.Name,
+				UpdatedAt: time.Now(),
+			})
+			if err != nil {
+				apiutils.RespondWithError(h.ZapLogger, w, http.StatusInternalServerError, "Could not update user name")
+				return
+			}
+		}
+
+		if params.Country != nil {
+			err := h.DB.UpdateCustomerCountry(r.Context(), database.UpdateCustomerCountryParams{
+				ID:        params.Id,
+				Country:   *params.Country,
+				UpdatedAt: time.Now(),
+			})
+			if err != nil {
+				apiutils.RespondWithError(h.ZapLogger, w, http.StatusInternalServerError, "Could not update user name")
+				return
+			}
+		}
+
+		if params.Description != nil {
+			err := h.DB.UpdateCustomerDescription(r.Context(), database.UpdateCustomerDescriptionParams{
+				ID:          params.Id,
+				Description: sql.NullString{String: *params.Description, Valid: true},
+				UpdatedAt:   time.Now(),
+			})
+			if err != nil {
+				apiutils.RespondWithError(h.ZapLogger, w, http.StatusInternalServerError, "Could not update user name")
+				return
+			}
+		}
+		apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, map[string]string{"status": "updated"})
+	}
+}
