@@ -3,6 +3,7 @@ package utils
 import (
 	"errors"
 	"go.uber.org/zap"
+	"golang.org/x/crypto/bcrypt"
 	"os"
 )
 
@@ -24,10 +25,10 @@ func GetDBUrl(logger *zap.Logger) (string, error) {
 	return dbUrl, nil
 }
 
-func CreatePasswordHash(password string) string {
+func CreatePasswordHash(password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return "", err
 	}
-	return string(bytes), err
+	return string(bytes), nil
 }
