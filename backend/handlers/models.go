@@ -19,3 +19,15 @@ type Customer struct {
 	UpdatedAt   time.Time
 }
 
+func DatabaseCustomerToCustomer(dbCustomer database.Customer) Customer {
+	return Customer{
+		ID:          dbCustomer.ID,
+		Name:        dbCustomer.Name,
+		Email:       dbCustomer.Email,
+		Country:     dbCustomer.Country,
+		Description: dbCustomer.Description,
+		Photourl:    dbCustomer.Photourl,
+		CreatedAt:   dbCustomer.CreatedAt,
+		UpdatedAt:   dbCustomer.UpdatedAt,
+	}
+}
