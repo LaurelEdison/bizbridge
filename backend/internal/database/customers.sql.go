@@ -99,3 +99,93 @@ func (q *Queries) GetCustomerByID(ctx context.Context, id uuid.UUID) (Customer, 
 	)
 	return i, err
 }
+
+const updateCustomerCountry = `-- name: UpdateCustomerCountry :exec
+UPDATE customers
+SET country = $2,
+updated_at = $3
+WHERE id = $1
+`
+
+type UpdateCustomerCountryParams struct {
+	ID        uuid.UUID
+	Country   string
+	UpdatedAt time.Time
+}
+
+func (q *Queries) UpdateCustomerCountry(ctx context.Context, arg UpdateCustomerCountryParams) error {
+	_, err := q.db.ExecContext(ctx, updateCustomerCountry, arg.ID, arg.Country, arg.UpdatedAt)
+	return err
+}
+
+const updateCustomerDescription = `-- name: UpdateCustomerDescription :exec
+UPDATE customers
+SET description = $2,
+updated_at = $3
+WHERE id = $1
+`
+
+type UpdateCustomerDescriptionParams struct {
+	ID          uuid.UUID
+	Description sql.NullString
+	UpdatedAt   time.Time
+}
+
+func (q *Queries) UpdateCustomerDescription(ctx context.Context, arg UpdateCustomerDescriptionParams) error {
+	_, err := q.db.ExecContext(ctx, updateCustomerDescription, arg.ID, arg.Description, arg.UpdatedAt)
+	return err
+}
+
+const updateCustomerEmail = `-- name: UpdateCustomerEmail :exec
+UPDATE customers
+SET email = $2,
+updated_at = $3
+WHERE id = $1
+`
+
+type UpdateCustomerEmailParams struct {
+	ID        uuid.UUID
+	Email     string
+	UpdatedAt time.Time
+}
+
+func (q *Queries) UpdateCustomerEmail(ctx context.Context, arg UpdateCustomerEmailParams) error {
+	_, err := q.db.ExecContext(ctx, updateCustomerEmail, arg.ID, arg.Email, arg.UpdatedAt)
+	return err
+}
+
+const updateCustomerName = `-- name: UpdateCustomerName :exec
+UPDATE customers
+SET name = $2,
+updated_at = $3
+WHERE id = $1
+`
+
+type UpdateCustomerNameParams struct {
+	ID        uuid.UUID
+	Name      string
+	UpdatedAt time.Time
+}
+
+func (q *Queries) UpdateCustomerName(ctx context.Context, arg UpdateCustomerNameParams) error {
+	_, err := q.db.ExecContext(ctx, updateCustomerName, arg.ID, arg.Name, arg.UpdatedAt)
+	return err
+}
+
+const updateCustomerPhotoUrl = `-- name: UpdateCustomerPhotoUrl :exec
+UPDATE customers
+SET photourl = $2,
+updated_at = $3
+WHERE id = $1
+`
+
+type UpdateCustomerPhotoUrlParams struct {
+	ID        uuid.UUID
+	Photourl  sql.NullString
+	UpdatedAt time.Time
+}
+
+func (q *Queries) UpdateCustomerPhotoUrl(ctx context.Context, arg UpdateCustomerPhotoUrlParams) error {
+	_, err := q.db.ExecContext(ctx, updateCustomerPhotoUrl, arg.ID, arg.Photourl, arg.UpdatedAt)
+	return err
+}
