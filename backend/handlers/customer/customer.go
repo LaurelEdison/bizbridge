@@ -135,3 +135,5 @@ func UpdateCustomerDetails(h *handlers.Handlers) http.HandlerFunc {
 		apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, map[string]string{"status": "updated"})
 	}
 }
+
+//TODO: Implement update email
