@@ -21,6 +21,14 @@ type Config struct {
 }
 
 var config Config
+
+var CustomerIssuer string = "customer"
+var CompanyIssuer string = "company"
+
+type contextKey string
+
+const Claims contextKey = "claims"
+
 func InitJWT(customerKey string, companyKey string) {
 	config.CompanyJWTKey = []byte(companyKey)
 	config.CustomerJWTKey = []byte(customerKey)
