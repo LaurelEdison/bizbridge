@@ -15,3 +15,13 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+type Config struct {
+	CustomerJWTKey []byte
+	CompanyJWTKey  []byte
+}
+
+var config Config
+func InitJWT(customerKey string, companyKey string) {
+	config.CompanyJWTKey = []byte(companyKey)
+	config.CustomerJWTKey = []byte(customerKey)
+}
