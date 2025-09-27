@@ -33,3 +33,14 @@ func InitJWT(customerKey string, companyKey string) {
 	config.CompanyJWTKey = []byte(companyKey)
 	config.CustomerJWTKey = []byte(customerKey)
 }
+
+func generateJWT(id uuid.UUID, role string, secret []byte, issuer string) (string, error) {
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"id":   id.String(),
+		"role": role,
+		"exp":  time.Now().Add(time.Hour * 72).Unix(),
+		"iss":  issuer,
+	})
+	return token.SignedString(secret)
+}
+
