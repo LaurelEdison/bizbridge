@@ -89,3 +89,13 @@ func Login(h *handlers.Handlers) http.HandlerFunc {
 	}
 }
 
+
+func CheckPasswordHash(hashedPassword, password string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+	return err == nil
+}
+
+func GetClaims(ctx context.Context) (jwt.MapClaims, bool) {
+	claims, ok := ctx.Value(Claims).(jwt.MapClaims)
+	return claims, ok
+}
