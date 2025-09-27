@@ -44,3 +44,48 @@ func generateJWT(id uuid.UUID, role string, secret []byte, issuer string) (strin
 	return token.SignedString(secret)
 }
 
+func Login(h *handlers.Handlers) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		type parameters struct {
+			Email    string `json:"email"`
+			Password string `json:"password"`
+			Role     string `json:"role"`
+		}
+		params := &parameters{}
+
+		if err := json.NewDecoder(r.Body).Decode(params); err != nil {
+			apiutils.RespondWithError(h.ZapLogger, w, http.StatusBadRequest, "Could not decode json request")
+			return
+		}
+
+		var token string
+
+		if params.Role == "customer" {
+			customer, err := h.DB.GetCustomerByEmail(r.Context(), strings.ToLower(params.Email))
+			if err != nil {
+				apiutils.RespondWithError(h.ZapLogger, w, http.StatusBadRequest, "Invalid email or password")
+				return
+			}
+
+			if passOk := CheckPasswordHash(customer.PasswordHash, params.Password); !passOk {
+				apiutils.RespondWithError(h.ZapLogger, w, http.StatusBadRequest, "Invalid email or password")
+				return
+			}
+
+			token, err = generateJWT(customer.ID, "customer", config.CustomerJWTKey, CustomerIssuer)
+			if err != nil {
+				apiutils.RespondWithError(h.ZapLogger, w, http.StatusBadRequest, "Could not generate jwt token")
+				return
+			}
+		}
+
+		if params.Role == "company" {
+			//TODO:Implement company handler and sql
+			apiutils.RespondWithError(h.ZapLogger, w, http.StatusBadRequest, "Companies are not implemented yet")
+			return
+		}
+
+		apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, map[string]string{"token": token})
+	}
+}
+
