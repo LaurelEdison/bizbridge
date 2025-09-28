@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/LaurelEdison/bizbridge/handlers"
+	"github.com/LaurelEdison/bizbridge/handlers/auth"
 	"github.com/LaurelEdison/bizbridge/internal/database"
 	"github.com/LaurelEdison/bizbridge/routes"
 	"github.com/LaurelEdison/bizbridge/utils"
@@ -30,6 +31,10 @@ func NewServer(zapLogger *zap.Logger) *http.Server {
 		panic(err)
 	}
 	queries := database.New(conn)
+
+	companySecret := os.Getenv("JWT_COMPANY_SECRET")
+	customerSecret := os.Getenv("JWT_CUSTOMER_SECRET")
+	auth.InitJWT(customerSecret, companySecret)
 
 	router := chi.NewRouter()
 	subRouter := chi.NewRouter()
