@@ -12,7 +12,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func CreateCompany(h handlers.Handlers) http.HandlerFunc {
+func CreateCompany(h *handlers.Handlers) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		type Parameters struct {
 			Name     string `json:"name"`
