@@ -2,6 +2,7 @@ package routes
 
 import (
 	"github.com/LaurelEdison/bizbridge/handlers"
+	"github.com/LaurelEdison/bizbridge/handlers/auth"
 	"github.com/LaurelEdison/bizbridge/handlers/customer"
 	"github.com/LaurelEdison/bizbridge/handlers/healthz"
 	"github.com/go-chi/chi/v5"
