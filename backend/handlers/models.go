@@ -29,5 +29,15 @@ func DatabaseCustomerToCustomer(dbCustomer database.Customer) Customer {
 		Photourl:    dbCustomer.Photourl,
 		CreatedAt:   dbCustomer.CreatedAt,
 		UpdatedAt:   dbCustomer.UpdatedAt,
+type Company struct {
+	ID          uuid.UUID
+	Name        string
+	Email       string
+	Address     string
+	Description sql.NullString
+	Photourl    sql.NullString
+	Username    sql.NullString
+}
+
 	}
 }
