@@ -21,6 +21,13 @@ SET email = $2,
 updated_at = $3
 WHERE id = $1;
 
+--TODO: Not implemented
+-- name: UpdateCustomerPassword :exec
+UPDATE customers
+SET password_hash = $2,
+updated_at = $3
+WHERE id = $1;
+
 -- name: UpdateCustomerCountry :exec
 UPDATE customers
 SET country = $2,

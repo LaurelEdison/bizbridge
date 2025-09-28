@@ -149,6 +149,7 @@ type UpdateCustomerEmailParams struct {
 	UpdatedAt time.Time
 }
 
+// TODO: Not implemented
 func (q *Queries) UpdateCustomerEmail(ctx context.Context, arg UpdateCustomerEmailParams) error {
 	_, err := q.db.ExecContext(ctx, updateCustomerEmail, arg.ID, arg.Email, arg.UpdatedAt)
 	return err
@@ -169,6 +170,25 @@ type UpdateCustomerNameParams struct {
 
 func (q *Queries) UpdateCustomerName(ctx context.Context, arg UpdateCustomerNameParams) error {
 	_, err := q.db.ExecContext(ctx, updateCustomerName, arg.ID, arg.Name, arg.UpdatedAt)
+	return err
+}
+
+const updateCustomerPassword = `-- name: UpdateCustomerPassword :exec
+UPDATE customers
+SET password_hash = $2,
+updated_at = $3
+WHERE id = $1
+`
+
+type UpdateCustomerPasswordParams struct {
+	ID           uuid.UUID
+	PasswordHash string
+	UpdatedAt    time.Time
+}
+
+// TODO: Not implemented
+func (q *Queries) UpdateCustomerPassword(ctx context.Context, arg UpdateCustomerPasswordParams) error {
+	_, err := q.db.ExecContext(ctx, updateCustomerPassword, arg.ID, arg.PasswordHash, arg.UpdatedAt)
 	return err
 }
 

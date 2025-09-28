@@ -3,6 +3,7 @@ package routes
 import (
 	"github.com/LaurelEdison/bizbridge/handlers"
 	"github.com/LaurelEdison/bizbridge/handlers/auth"
+	"github.com/LaurelEdison/bizbridge/handlers/company"
 	"github.com/LaurelEdison/bizbridge/handlers/customer"
 	"github.com/LaurelEdison/bizbridge/handlers/healthz"
 	"github.com/go-chi/chi/v5"
@@ -12,13 +13,20 @@ import (
 
 func SetupRoutes(h *handlers.Handlers, router chi.Router) {
 	router.Get("/healthz", healthz.HandlerHealth(h))
+
 	router.Post("/customer", customer.CreateCustomer(h))
-	router.Post("/customer/login", auth.Login(h))
+	router.Post("/company", company.CreateCompany(h))
+
+	router.Post("/login", auth.Login(h))
 
 	router.Group(func(router chi.Router) {
 		router.Use(auth.JWTAuthMiddleware)
-		router.Get("/customer/me", auth.JWTAuthMiddleware(customer.GetMe(h)).ServeHTTP)
+
+		router.Get("/customer/me", customer.GetMe(h))
 		router.Patch("/customer/update", customer.UpdateCustomerDetails(h))
+
+		router.Get("/company/me", company.GetMe(h))
+		router.Patch("/company/update", company.UpdateCompanyDetails(h))
 
 	})
 

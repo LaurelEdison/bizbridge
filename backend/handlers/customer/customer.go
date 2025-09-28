@@ -60,11 +60,13 @@ func CreateCustomer(h *handlers.Handlers) http.HandlerFunc {
 		err := decoder.Decode(&params)
 		if err != nil {
 			apiutils.RespondWithError(h.ZapLogger, w, http.StatusBadRequest, "Could not decode json")
+			return
 		}
 
 		hashedPassword, err := utils.CreatePasswordHash(params.Password)
 		if err != nil {
 			apiutils.RespondWithError(h.ZapLogger, w, http.StatusBadRequest, "Could not create password")
+			return
 		}
 
 		customer, err := h.DB.CreateCustomer(r.Context(), database.CreateCustomerParams{
@@ -79,6 +81,7 @@ func CreateCustomer(h *handlers.Handlers) http.HandlerFunc {
 		})
 		if err != nil {
 			apiutils.RespondWithError(h.ZapLogger, w, http.StatusInternalServerError, "Could not create customer")
+			return
 		}
 		apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, handlers.DatabaseCustomerToCustomer(customer))
 	}
@@ -96,6 +99,7 @@ func GetCustomerByID(h *handlers.Handlers) http.HandlerFunc {
 		customer, err := h.DB.GetCustomerByID(r.Context(), customerID)
 		if err != nil {
 			apiutils.RespondWithError(h.ZapLogger, w, http.StatusInternalServerError, "Could not get customer by id")
+			return
 		}
 		apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, handlers.DatabaseCustomerToCustomer(customer))
 	}
