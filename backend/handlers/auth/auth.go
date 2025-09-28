@@ -89,6 +89,42 @@ func Login(h *handlers.Handlers) http.HandlerFunc {
 	}
 }
 
+func JWTAuthMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		authHeader := r.Header.Get("Authorization")
+		if authHeader == "" || !strings.HasPrefix(authHeader, "Bearer ") {
+			http.Error(w, "Missing or invalid token", http.StatusUnauthorized)
+			return
+		}
+		tokenString := strings.TrimPrefix(authHeader, "Bearer ")
+		token, err := jwt.Parse(tokenString, func(t *jwt.Token) (any, error) {
+			if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+				return nil, fmt.Errorf("unexpected signing method: %v", t.Header["Alg"])
+			}
+			claims, ok := t.Claims.(jwt.MapClaims)
+			if !ok {
+				return nil, fmt.Errorf("invalid claims")
+			}
+			iss := claims["iss"].(string)
+			switch iss {
+			case CustomerIssuer:
+				return config.CustomerJWTKey, nil
+			case CompanyIssuer:
+				return config.CompanyJWTKey, nil
+			default:
+				return nil, fmt.Errorf("invalid issuer")
+			}
+		})
+
+		if err != nil || !token.Valid {
+			http.Error(w, "Invalid token", http.StatusUnauthorized)
+			return
+		}
+
+		ctx := context.WithValue(r.Context(), Claims, token.Claims.(jwt.MapClaims))
+		next.ServeHTTP(w, r.WithContext(ctx))
+	})
+}
 
 func CheckPasswordHash(hashedPassword, password string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
