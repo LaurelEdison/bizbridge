@@ -114,15 +114,32 @@ func GetCustomerByEmail(h *handlers.Handlers) http.HandlerFunc {
 
 func UpdateCustomerDetails(h *handlers.Handlers) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		type Parameters struct {
-			Name        *string   `json:"name"`
-			Country     *string   `json:"country"`
-			Description *string   `json:"description"`
-			Id          uuid.UUID `json:"id"` //TODO: Pass uid params through auth function
+		claims, ok := auth.GetClaims(r.Context())
+		if !ok {
+			apiutils.RespondWithError(h.ZapLogger, w, http.StatusUnauthorized, "Invalid claims")
+			return
 		}
+		role := claims["role"].(string)
+		idstr := claims["id"].(string)
+		id, err := uuid.Parse(idstr)
+		if err != nil {
+			apiutils.RespondWithError(h.ZapLogger, w, http.StatusBadRequest, "Invalid id")
+			return
+		}
+		if role != "customer" {
+			apiutils.RespondWithError(h.ZapLogger, w, http.StatusBadRequest, "Unexpected role")
+			return
+		}
+
+		type Parameters struct {
+			Name        *string `json:"name"`
+			Country     *string `json:"country"`
+			Description *string `json:"description"`
+		}
+
 		params := &Parameters{}
 		decoder := json.NewDecoder(r.Body)
-		err := decoder.Decode(&params)
+		err = decoder.Decode(&params)
 		if err != nil {
 			apiutils.RespondWithError(h.ZapLogger, w, http.StatusBadRequest, "Could not decode json")
 			return
@@ -130,7 +147,7 @@ func UpdateCustomerDetails(h *handlers.Handlers) http.HandlerFunc {
 
 		if params.Name != nil {
 			err := h.DB.UpdateCustomerName(r.Context(), database.UpdateCustomerNameParams{
-				ID:        params.Id,
+				ID:        id,
 				Name:      *params.Name,
 				UpdatedAt: time.Now(),
 			})
@@ -142,7 +159,7 @@ func UpdateCustomerDetails(h *handlers.Handlers) http.HandlerFunc {
 
 		if params.Country != nil {
 			err := h.DB.UpdateCustomerCountry(r.Context(), database.UpdateCustomerCountryParams{
-				ID:        params.Id,
+				ID:        id,
 				Country:   *params.Country,
 				UpdatedAt: time.Now(),
 			})
@@ -154,7 +171,7 @@ func UpdateCustomerDetails(h *handlers.Handlers) http.HandlerFunc {
 
 		if params.Description != nil {
 			err := h.DB.UpdateCustomerDescription(r.Context(), database.UpdateCustomerDescriptionParams{
-				ID:          params.Id,
+				ID:          id,
 				Description: sql.NullString{String: *params.Description, Valid: true},
 				UpdatedAt:   time.Now(),
 			})
