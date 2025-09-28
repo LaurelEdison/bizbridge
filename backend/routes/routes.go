@@ -15,6 +15,7 @@ func SetupRoutes(h *handlers.Handlers, router chi.Router) {
 	router.Get("/customer/email/{email}", customer.GetCustomerByEmail(h))
 	router.Get("/customer/id/{id}", customer.GetCustomerByID(h))
 	router.Patch("/customer/update", customer.UpdateCustomerDetails(h))
+	router.Post("/customer/login", auth.Login(h))
 }
 
 // TODO: Change to less permissive in prod
