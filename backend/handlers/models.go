@@ -27,8 +27,9 @@ func DatabaseCustomerToCustomer(dbCustomer database.Customer) Customer {
 		Country:     dbCustomer.Country,
 		Description: dbCustomer.Description,
 		Photourl:    dbCustomer.Photourl,
-		CreatedAt:   dbCustomer.CreatedAt,
-		UpdatedAt:   dbCustomer.UpdatedAt,
+	}
+}
+
 type Company struct {
 	ID          uuid.UUID
 	Name        string
@@ -39,5 +40,14 @@ type Company struct {
 	Username    sql.NullString
 }
 
+func DatabaseCompanyToCompany(dbCompany database.Company) Company {
+	return Company{
+		ID:          dbCompany.ID,
+		Name:        dbCompany.Name,
+		Email:       dbCompany.Email,
+		Address:     dbCompany.Address,
+		Description: dbCompany.Description,
+		Photourl:    dbCompany.Photourl,
+		Username:    dbCompany.Username,
 	}
 }
