@@ -50,3 +50,34 @@ func CreateCompany(h *handlers.Handlers) http.HandlerFunc {
 		apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, handlers.DatabaseCompanyToCompany(company))
 	}
 }
+
+func GetMe(h *handlers.Handlers) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		claims, ok := auth.GetClaims(r.Context())
+		if !ok {
+			apiutils.RespondWithError(h.ZapLogger, w, http.StatusUnauthorized, "Invalid claims")
+			return
+		}
+		role := claims["role"].(string)
+		idstr := claims["id"].(string)
+		id, err := uuid.Parse(idstr)
+		if err != nil {
+			apiutils.RespondWithError(h.ZapLogger, w, http.StatusBadRequest, "Invalid id")
+			return
+		}
+
+		if role != "company" {
+			apiutils.RespondWithError(h.ZapLogger, w, http.StatusBadRequest, "Unexpected role")
+			return
+		}
+
+		company, err := h.DB.GetCompanyByID(r.Context(), id)
+		if err != nil {
+			apiutils.RespondWithError(h.ZapLogger, w, http.StatusBadRequest, "Could not find customer")
+			return
+		}
+		apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, handlers.DatabaseCompanyToCompany(company))
+
+	}
+}
+
