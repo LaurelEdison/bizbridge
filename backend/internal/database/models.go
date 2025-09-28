@@ -11,6 +11,19 @@ import (
 	"github.com/google/uuid"
 )
 
+type Company struct {
+	ID           uuid.UUID
+	Name         string
+	Email        string
+	PasswordHash string
+	Address      string
+	Description  sql.NullString
+	Photourl     sql.NullString
+	Username     sql.NullString
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
+}
+
 type Customer struct {
 	ID           uuid.UUID
 	Name         string
