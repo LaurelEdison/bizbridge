@@ -3,6 +3,7 @@ package routes
 import (
 	"github.com/LaurelEdison/bizbridge/handlers"
 	"github.com/LaurelEdison/bizbridge/handlers/auth"
+	"github.com/LaurelEdison/bizbridge/handlers/company"
 	"github.com/LaurelEdison/bizbridge/handlers/customer"
 	"github.com/LaurelEdison/bizbridge/handlers/healthz"
 	"github.com/go-chi/chi/v5"
@@ -23,6 +24,9 @@ func SetupRoutes(h *handlers.Handlers, router chi.Router) {
 
 		router.Get("/customer/me", customer.GetMe(h))
 		router.Patch("/customer/update", customer.UpdateCustomerDetails(h))
+
+		router.Get("/company/me", company.GetMe(h))
+		router.Patch("/company/update", company.UpdateCompanyDetails(h))
 
 	})
 
