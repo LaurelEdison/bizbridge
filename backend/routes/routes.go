@@ -15,12 +15,12 @@ func SetupRoutes(h *handlers.Handlers, router chi.Router) {
 	router.Post("/customer", customer.CreateCustomer(h))
 	router.Get("/customer/email/{email}", customer.GetCustomerByEmail(h))
 	router.Get("/customer/id/{id}", customer.GetCustomerByID(h))
-	router.Patch("/customer/update", customer.UpdateCustomerDetails(h))
 	router.Post("/customer/login", auth.Login(h))
 
 	router.Group(func(router chi.Router) {
 		router.Use(auth.JWTAuthMiddleware)
 		router.Get("/customer/me", auth.JWTAuthMiddleware(customer.GetMe(h)).ServeHTTP)
+		router.Patch("/customer/update", customer.UpdateCustomerDetails(h))
 
 	})
 
