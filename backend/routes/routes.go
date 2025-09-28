@@ -12,8 +12,10 @@ import (
 
 func SetupRoutes(h *handlers.Handlers, router chi.Router) {
 	router.Get("/healthz", healthz.HandlerHealth(h))
+
 	router.Post("/customer", customer.CreateCustomer(h))
-	router.Post("/customer/login", auth.Login(h))
+	router.Post("/company", company.CreateCompany(h))
+
 
 	router.Group(func(router chi.Router) {
 		router.Use(auth.JWTAuthMiddleware)
