@@ -17,7 +17,8 @@ func SetupRoutes(h *handlers.Handlers, router chi.Router) {
 
 	router.Group(func(router chi.Router) {
 		router.Use(auth.JWTAuthMiddleware)
-		router.Get("/customer/me", auth.JWTAuthMiddleware(customer.GetMe(h)).ServeHTTP)
+
+		router.Get("/customer/me", customer.GetMe(h))
 		router.Patch("/customer/update", customer.UpdateCustomerDetails(h))
 
 	})
