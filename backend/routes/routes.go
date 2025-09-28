@@ -2,6 +2,7 @@ package routes
 
 import (
 	"github.com/LaurelEdison/bizbridge/handlers"
+	"github.com/LaurelEdison/bizbridge/handlers/auth"
 	"github.com/LaurelEdison/bizbridge/handlers/customer"
 	"github.com/LaurelEdison/bizbridge/handlers/healthz"
 	"github.com/go-chi/chi/v5"
@@ -12,9 +13,16 @@ import (
 func SetupRoutes(h *handlers.Handlers, router chi.Router) {
 	router.Get("/healthz", healthz.HandlerHealth(h))
 	router.Post("/customer", customer.CreateCustomer(h))
-	router.Get("/customer/email/{email}", customer.GetCustomerByEmail(h))
-	router.Get("/customer/id/{id}", customer.GetCustomerByID(h))
-	router.Patch("/customer/update", customer.UpdateCustomerDetails(h))
+	router.Post("/customer/login", auth.Login(h))
+
+	router.Group(func(router chi.Router) {
+		router.Use(auth.JWTAuthMiddleware)
+		router.Get("/customer/me", auth.JWTAuthMiddleware(customer.GetMe(h)).ServeHTTP)
+		router.Patch("/customer/update", customer.UpdateCustomerDetails(h))
+
+	})
+
+	//TODO: Add router groups for admin only ops
 }
 
 // TODO: Change to less permissive in prod
