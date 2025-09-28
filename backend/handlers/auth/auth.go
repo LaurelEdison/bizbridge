@@ -80,9 +80,21 @@ func Login(h *handlers.Handlers) http.HandlerFunc {
 		}
 
 		if params.Role == "company" {
-			//TODO:Implement company handler and sql
-			apiutils.RespondWithError(h.ZapLogger, w, http.StatusBadRequest, "Companies are not implemented yet")
-			return
+			company, err := h.DB.GetCompanyByEmail(r.Context(), strings.ToLower(params.Email))
+			if err != nil {
+				apiutils.RespondWithError(h.ZapLogger, w, http.StatusBadRequest, "Invalid email or password")
+				return
+			}
+
+			if passOk := CheckPasswordHash(company.PasswordHash, params.Password); !passOk {
+				apiutils.RespondWithError(h.ZapLogger, w, http.StatusBadRequest, "Invalid email or password")
+				return
+			}
+			token, err = generateJWT(company.ID, "company", config.CompanyJWTKey, CompanyIssuer)
+			if err != nil {
+				apiutils.RespondWithError(h.ZapLogger, w, http.StatusBadRequest, "Could not generate jwt token")
+				return
+			}
 		}
 
 		apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, map[string]string{"token": token})
