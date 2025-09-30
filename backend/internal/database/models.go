@@ -11,6 +11,14 @@ import (
 	"github.com/google/uuid"
 )
 
+type ChatRoom struct {
+	ID         uuid.UUID
+	CustomerID uuid.UUID
+	CompanyID  uuid.UUID
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
+}
+
 type Company struct {
 	ID           uuid.UUID
 	Name         string
@@ -34,4 +42,16 @@ type Customer struct {
 	Photourl     sql.NullString
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
+}
+
+type Message struct {
+	ID         uuid.UUID
+	ChatRoomID uuid.UUID
+	SenderID   uuid.UUID
+	Content    sql.NullString
+	FileUrl    sql.NullString
+	FileName   sql.NullString
+	FileSize   sql.NullString
+	SentAt     sql.NullTime
+	IsRead     sql.NullBool
 }

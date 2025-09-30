@@ -1,0 +1,71 @@
+package chat
+
+import (
+	"encoding/json"
+	"net/http"
+	"time"
+
+	"github.com/LaurelEdison/bizbridge/handlers"
+	"github.com/LaurelEdison/bizbridge/handlers/apiutils"
+	"github.com/LaurelEdison/bizbridge/handlers/auth"
+	"github.com/LaurelEdison/bizbridge/internal/database"
+	"github.com/google/uuid"
+)
+
+func CreateChatRoom(h *handlers.Handlers) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		claims, ok := auth.GetClaims(r.Context())
+		if !ok {
+			apiutils.RespondWithError(h.ZapLogger, w, http.StatusUnauthorized, "Invalid claims")
+			return
+		}
+		role := claims["role"].(string)
+		idstr := claims["id"].(string)
+		id, err := uuid.Parse(idstr)
+		if err != nil {
+			apiutils.RespondWithError(h.ZapLogger, w, http.StatusBadRequest, "Invalid id")
+			return
+		}
+
+		type Parameters struct {
+			Recipient uuid.UUID `json:"recipient_id"`
+		}
+		params := &Parameters{}
+		decoder := json.NewDecoder(r.Body)
+		err = decoder.Decode(&params)
+		if err != nil {
+			apiutils.RespondWithError(h.ZapLogger, w, http.StatusBadRequest, "Could not decode json")
+			return
+		}
+
+		if role == "company" {
+			chatRoom, err := h.DB.CreateChatRoom(r.Context(), database.CreateChatRoomParams{
+				ID:         uuid.New(),
+				CustomerID: params.Recipient,
+				CompanyID:  id,
+				CreatedAt:  time.Now(),
+				UpdatedAt:  time.Now(),
+			})
+			if err != nil {
+				apiutils.RespondWithError(h.ZapLogger, w, http.StatusInternalServerError, "Failed to create chatroom")
+				return
+			}
+			apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, chatRoom)
+		}
+		if role == "customer" {
+			chatRoom, err := h.DB.CreateChatRoom(r.Context(), database.CreateChatRoomParams{
+				ID:         uuid.New(),
+				CustomerID: id,
+				CompanyID:  params.Recipient,
+				CreatedAt:  time.Now(),
+				UpdatedAt:  time.Now(),
+			})
+			if err != nil {
+				apiutils.RespondWithError(h.ZapLogger, w, http.StatusInternalServerError, "Failed to create chatroom")
+				return
+			}
+			apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, chatRoom)
+		}
+
+	}
+}

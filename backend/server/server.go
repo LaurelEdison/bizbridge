@@ -10,6 +10,7 @@ import (
 
 	"github.com/LaurelEdison/bizbridge/handlers"
 	"github.com/LaurelEdison/bizbridge/handlers/auth"
+	"github.com/LaurelEdison/bizbridge/handlers/chat/ws"
 	"github.com/LaurelEdison/bizbridge/internal/database"
 	"github.com/LaurelEdison/bizbridge/routes"
 	"github.com/LaurelEdison/bizbridge/utils"
@@ -39,8 +40,11 @@ func NewServer(zapLogger *zap.Logger) *http.Server {
 	router := chi.NewRouter()
 	subRouter := chi.NewRouter()
 	routes.SetupCors(zapLogger, router)
-	routes.SetupRoutes(handlers.New(zapLogger, queries), subRouter)
+	hub := ws.NewHub()
+	go ws.Run(hub, zapLogger)
+	routes.SetupRoutes(handlers.New(zapLogger, queries, hub), subRouter)
 	router.Mount("/bizbridge", subRouter)
+
 	return &http.Server{
 		Addr:    ":" + portString,
 		Handler: router,
@@ -64,6 +68,7 @@ func Run() error {
 	}()
 
 	srv := NewServer(zapLogger)
+
 	err = srv.ListenAndServe()
 	if err != nil && err != http.ErrServerClosed {
 		zapLogger.Error("Failed to start http server", zap.Error(err))
