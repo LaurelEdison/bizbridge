@@ -17,7 +17,8 @@ func SetupRoutes(h *handlers.Handlers, router chi.Router) {
 	router.Post("/customer", customer.CreateCustomer(h))
 	router.Post("/company", company.CreateCompany(h))
 
-	router.Post("/login", auth.Login(h))
+	router.Post("/company/login", company.Login(h))
+	router.Post("/customer/login", customer.Login(h))
 
 	router.Group(func(router chi.Router) {
 		router.Use(auth.JWTAuthMiddleware)
