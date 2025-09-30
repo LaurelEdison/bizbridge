@@ -1,8 +1,12 @@
 package routes
 
 import (
+	"net/http"
+
 	"github.com/LaurelEdison/bizbridge/handlers"
 	"github.com/LaurelEdison/bizbridge/handlers/auth"
+	"github.com/LaurelEdison/bizbridge/handlers/chat"
+	"github.com/LaurelEdison/bizbridge/handlers/chat/ws"
 	"github.com/LaurelEdison/bizbridge/handlers/company"
 	"github.com/LaurelEdison/bizbridge/handlers/customer"
 	"github.com/LaurelEdison/bizbridge/handlers/healthz"
@@ -29,6 +33,12 @@ func SetupRoutes(h *handlers.Handlers, router chi.Router) {
 		router.Get("/company/me", company.GetMe(h))
 		router.Patch("/company/update", company.UpdateCompanyDetails(h))
 
+		router.Post("/social/chat", chat.CreateChatRoom(h))
+		router.Post("/social/{chat_room_id}/message", chat.CreateMessage(h))
+
+		router.Get("/social/{chat_room_id}", func(w http.ResponseWriter, r *http.Request) {
+			ws.ServeWS(h.Hub, h.ZapLogger, w, r)
+		})
 	})
 
 	//TODO: Add router groups for admin only ops
