@@ -2,11 +2,11 @@ import { useState } from "react";
 import { useAuthStore } from "../store/auth";
 import { apiFetch } from "../api/client";
 //TODO: Switch to access+refresh token
-export default function Login() {
+export default function CustomerLogin() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const setToken = useAuthStore((s) => s.setToken);
-	async function handleLogin(e: React.FormEvent) {
+	async function handleCustomerLogin(e: React.FormEvent) {
 		e.preventDefault();
 		try {
 			const data = await apiFetch<{ token: string }>("/bizbridge/customer/login", {
@@ -23,7 +23,7 @@ export default function Login() {
 	}
 	return (
 		< div className="flex flex-col items-center justify-center h-screen" >
-			<form onSubmit={handleLogin} className="flex flex-col gap-2">
+			<form onSubmit={handleCustomerLogin} className="flex flex-col gap-2">
 				<input
 					className="border p-2"
 					placeholder="email"
