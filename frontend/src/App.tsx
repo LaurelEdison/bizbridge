@@ -1,9 +1,13 @@
 import './App.css'
-import Login from './pages/Login'
+import CompanyLogin from './pages/CompanyLogin'
+import CustomerLogin from './pages/CustomerLogin'
 
 function App() {
 	return (
-		<Login />
+		<div>
+			<CustomerLogin />
+			<CompanyLogin />
+		</div>
 	)
 }
 
