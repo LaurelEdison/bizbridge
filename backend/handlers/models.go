@@ -8,12 +8,12 @@ import (
 )
 
 type Customer struct {
-	ID          uuid.UUID
-	Name        string
-	Email       string
-	Country     string
-	Description sql.NullString
-	Photourl    sql.NullString
+	ID          uuid.UUID      `json:"id"`
+	Name        string         `json:"name"`
+	Email       string         `json:"email"`
+	Country     string         `json:"country"`
+	Description sql.NullString `json:"description"`
+	Photourl    sql.NullString `json:"photourl"`
 }
 
 func DatabaseCustomerToCustomer(dbCustomer database.Customer) Customer {
@@ -28,13 +28,13 @@ func DatabaseCustomerToCustomer(dbCustomer database.Customer) Customer {
 }
 
 type Company struct {
-	ID          uuid.UUID
-	Name        string
-	Email       string
-	Address     string
-	Description sql.NullString
-	Photourl    sql.NullString
-	Username    sql.NullString
+	ID          uuid.UUID      `json:"id"`
+	Name        string         `json:"name"`
+	Email       string         `json:"email"`
+	Address     string         `json:"address"`
+	Description sql.NullString `json:"description"`
+	Photourl    sql.NullString `json:"photourl"`
+	Username    sql.NullString `json:"username"`
 }
 
 func DatabaseCompanyToCompany(dbCompany database.Company) Company {
