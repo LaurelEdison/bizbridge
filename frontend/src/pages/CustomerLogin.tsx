@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuthStore } from "../store/auth";
 import { apiFetch } from "../api/client";
+import type { Customer } from "../store/auth";
 //TODO: Switch to access+refresh token
 export default function CustomerLogin() {
 	const [email, setEmail] = useState("");
@@ -16,6 +17,11 @@ export default function CustomerLogin() {
 			setToken(data.token);
 			console.log(data.token);
 
+			const role = "customer";
+			useAuthStore.getState().setRole(role);
+
+			const customer = await apiFetch<Customer>("/bizbridge/customer/me");
+			useAuthStore.getState().setCustomer(customer);
 
 		} catch (err) {
 			console.error("Login failed", err);
