@@ -1,19 +1,17 @@
 package handlers
 
 import (
-	"database/sql"
-
 	"github.com/LaurelEdison/bizbridge/internal/database"
 	"github.com/google/uuid"
 )
 
 type Customer struct {
-	ID          uuid.UUID      `json:"id"`
-	Name        string         `json:"name"`
-	Email       string         `json:"email"`
-	Country     string         `json:"country"`
-	Description sql.NullString `json:"description"`
-	Photourl    sql.NullString `json:"photourl"`
+	ID          uuid.UUID `json:"id"`
+	Name        string    `json:"name"`
+	Email       string    `json:"email"`
+	Country     string    `json:"country"`
+	Description *string   `json:"description,omitempty"`
+	Photourl    *string   `json:"photourl,omitempty"`
 }
 
 func DatabaseCustomerToCustomer(dbCustomer database.Customer) Customer {
@@ -22,19 +20,19 @@ func DatabaseCustomerToCustomer(dbCustomer database.Customer) Customer {
 		Name:        dbCustomer.Name,
 		Email:       dbCustomer.Email,
 		Country:     dbCustomer.Country,
-		Description: dbCustomer.Description,
-		Photourl:    dbCustomer.Photourl,
+		Description: &dbCustomer.Description.String,
+		Photourl:    &dbCustomer.Photourl.String,
 	}
 }
 
 type Company struct {
-	ID          uuid.UUID      `json:"id"`
-	Name        string         `json:"name"`
-	Email       string         `json:"email"`
-	Address     string         `json:"address"`
-	Description sql.NullString `json:"description"`
-	Photourl    sql.NullString `json:"photourl"`
-	Username    sql.NullString `json:"username"`
+	ID          uuid.UUID `json:"id"`
+	Name        string    `json:"name"`
+	Email       string    `json:"email"`
+	Address     string    `json:"address"`
+	Description *string   `json:"description,omitempty"`
+	Photourl    *string   `json:"photourl,omitempty"`
+	Username    *string   `json:"username,omitempty"`
 }
 
 func DatabaseCompanyToCompany(dbCompany database.Company) Company {
@@ -43,8 +41,8 @@ func DatabaseCompanyToCompany(dbCompany database.Company) Company {
 		Name:        dbCompany.Name,
 		Email:       dbCompany.Email,
 		Address:     dbCompany.Address,
-		Description: dbCompany.Description,
-		Photourl:    dbCompany.Photourl,
-		Username:    dbCompany.Username,
+		Description: &dbCompany.Description.String,
+		Photourl:    &dbCompany.Photourl.String,
+		Username:    &dbCompany.Username.String,
 	}
 }
