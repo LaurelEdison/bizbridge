@@ -1,7 +1,7 @@
 import './App.css'
 import CompanyLogin from './pages/CompanyLogin'
 import CustomerLogin from './pages/CustomerLogin'
-import Profile from './pages/Profile'
+import ProfileEdit from './pages/ProfileEdit'
 
 //TODO: Move profile to own page, currently only for testing
 function App() {
@@ -9,7 +9,7 @@ function App() {
 		<div>
 			<CustomerLogin />
 			<CompanyLogin />
-			<Profile />
+			<ProfileEdit />
 		</div>
 	)
 }

@@ -3,14 +3,14 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import './index.css'
 import App from './App.tsx'
-import Profile from './pages/Profile.tsx'
+import ProfileEdit from './pages/ProfileEdit.tsx'
 
 createRoot(document.getElementById('root')!).render(
 	<StrictMode>
 		<BrowserRouter>
 			<Routes>
 				<Route path='/' element={<App />} />
-				<Route path='/profile' element={<Profile />} />
+				<Route path='/profile' element={<ProfileEdit />} />
 			</Routes>
 		</BrowserRouter>
 
