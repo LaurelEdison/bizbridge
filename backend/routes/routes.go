@@ -48,7 +48,7 @@ func SetupRoutes(h *handlers.Handlers, router chi.Router) {
 func SetupCors(zapLogger *zap.Logger, router chi.Router) {
 	router.Use(cors.Handler(cors.Options{
 		AllowedOrigins:   []string{"https://*", "http://*"}, // Allow all origins for dev
-		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
 		AllowedHeaders:   []string{"*"}, // Accept all headers
 		ExposedHeaders:   []string{"Link"},
 		AllowCredentials: false,
