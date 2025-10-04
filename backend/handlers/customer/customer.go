@@ -184,7 +184,13 @@ func UpdateCustomerDetails(h *handlers.Handlers) http.HandlerFunc {
 				return
 			}
 		}
-		apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, map[string]string{"status": "updated"})
+
+		updatedCustomer, err := h.DB.GetCustomerByID(r.Context(), id)
+		if err != nil {
+			apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, map[string]string{"status": "updated"})
+			return
+		}
+		apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, handlers.DatabaseCustomerToCustomer(updatedCustomer))
 	}
 }
 
