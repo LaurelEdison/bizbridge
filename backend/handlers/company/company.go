@@ -164,6 +164,11 @@ func UpdateCompanyDetails(h *handlers.Handlers) http.HandlerFunc {
 				return
 			}
 		}
-		apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, map[string]string{"status": "updated"})
+		updatedCompany, err := h.DB.GetCompanyByID(r.Context(), id)
+		if err != nil {
+			apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, map[string]string{"status": "updated"})
+			return
+		}
+		apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, handlers.DatabaseCompanyToCompany(updatedCompany))
 	}
 }

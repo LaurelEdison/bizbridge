@@ -24,6 +24,9 @@ func SetupRoutes(h *handlers.Handlers, router chi.Router) {
 	router.Post("/company/login", company.Login(h))
 	router.Post("/customer/login", customer.Login(h))
 
+	router.Get("/social/{chat_room_id}", func(w http.ResponseWriter, r *http.Request) {
+		ws.ServeWS(h.Hub, h.ZapLogger, w, r)
+	})
 	router.Group(func(router chi.Router) {
 		router.Use(auth.JWTAuthMiddleware)
 
@@ -34,11 +37,10 @@ func SetupRoutes(h *handlers.Handlers, router chi.Router) {
 		router.Patch("/company/update", company.UpdateCompanyDetails(h))
 
 		router.Post("/social/chat", chat.CreateChatRoom(h))
+		router.Get("/social/chat", chat.GetUserChatRooms(h))
 		router.Post("/social/{chat_room_id}/message", chat.CreateMessage(h))
+		router.Get("/social/{chat_room_id}/message", chat.GetMessages(h))
 
-		router.Get("/social/{chat_room_id}", func(w http.ResponseWriter, r *http.Request) {
-			ws.ServeWS(h.Hub, h.ZapLogger, w, r)
-		})
 	})
 
 	//TODO: Add router groups for admin only ops
@@ -48,7 +50,7 @@ func SetupRoutes(h *handlers.Handlers, router chi.Router) {
 func SetupCors(zapLogger *zap.Logger, router chi.Router) {
 	router.Use(cors.Handler(cors.Options{
 		AllowedOrigins:   []string{"https://*", "http://*"}, // Allow all origins for dev
-		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
 		AllowedHeaders:   []string{"*"}, // Accept all headers
 		ExposedHeaders:   []string{"Link"},
 		AllowCredentials: false,

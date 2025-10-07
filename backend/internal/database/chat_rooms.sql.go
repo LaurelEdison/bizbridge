@@ -44,3 +44,36 @@ func (q *Queries) CreateChatRoom(ctx context.Context, arg CreateChatRoomParams) 
 	)
 	return i, err
 }
+
+const getUserChatRooms = `-- name: GetUserChatRooms :many
+SELECT id, customer_id, company_id, created_at, updated_at FROM chat_rooms WHERE customer_id = $1 or company_id = $1
+`
+
+func (q *Queries) GetUserChatRooms(ctx context.Context, customerID uuid.UUID) ([]ChatRoom, error) {
+	rows, err := q.db.QueryContext(ctx, getUserChatRooms, customerID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ChatRoom
+	for rows.Next() {
+		var i ChatRoom
+		if err := rows.Scan(
+			&i.ID,
+			&i.CustomerID,
+			&i.CompanyID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}

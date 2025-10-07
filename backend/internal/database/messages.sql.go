@@ -48,3 +48,40 @@ func (q *Queries) CreateMessage(ctx context.Context, arg CreateMessageParams) (M
 	)
 	return i, err
 }
+
+const getMessages = `-- name: GetMessages :many
+SELECT id, chat_room_id, sender_id, content, file_url, file_name, file_size, sent_at, is_read FROM messages WHERE chat_room_id = $1
+`
+
+func (q *Queries) GetMessages(ctx context.Context, chatRoomID uuid.UUID) ([]Message, error) {
+	rows, err := q.db.QueryContext(ctx, getMessages, chatRoomID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Message
+	for rows.Next() {
+		var i Message
+		if err := rows.Scan(
+			&i.ID,
+			&i.ChatRoomID,
+			&i.SenderID,
+			&i.Content,
+			&i.FileUrl,
+			&i.FileName,
+			&i.FileSize,
+			&i.SentAt,
+			&i.IsRead,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
