@@ -1,5 +1,5 @@
 import { create } from "zustand";
-
+//TODO: Add more metadata to chatmessages, sender id, name/username
 export type ChatMessage = {
 	id: string;
 	chat_room_id: string;

@@ -76,6 +76,7 @@ func DatabaseChatRoomsToChatRooms(dbChatRooms []database.ChatRoom) []ChatRoom {
 	return chatrooms
 }
 
+// TODO: Add more metadata to chatmessages, sender id, name/username
 type Message struct {
 	ID         uuid.UUID `json:"id"`
 	ChatRoomID uuid.UUID `json:"chat_room_id"`
