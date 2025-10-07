@@ -69,3 +69,30 @@ func CreateChatRoom(h *handlers.Handlers) http.HandlerFunc {
 
 	}
 }
+
+//TODO: Need to normalize chat rooms output
+
+func GetUserChatRooms(h *handlers.Handlers) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		claims, ok := auth.GetClaims(r.Context())
+		if !ok {
+			apiutils.RespondWithError(h.ZapLogger, w, http.StatusUnauthorized, "Invalid claims")
+			return
+		}
+		idstr := claims["id"].(string)
+		id, err := uuid.Parse(idstr)
+		if err != nil {
+			apiutils.RespondWithError(h.ZapLogger, w, http.StatusBadRequest, "Invalid id")
+			return
+		}
+
+		chatRooms, err := h.DB.GetUserChatRooms(r.Context(), id)
+		if err != nil {
+			apiutils.RespondWithError(h.ZapLogger, w, http.StatusInternalServerError, "Failed to get chat rooms")
+			return
+		}
+
+		apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, handlers.DatabaseChatRoomsToChatRooms(chatRooms))
+
+	}
+}
