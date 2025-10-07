@@ -66,3 +66,22 @@ func CreateMessage(h *handlers.Handlers) http.HandlerFunc {
 		apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, Message)
 	}
 }
+
+func GetMessages(h *handlers.Handlers) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		chatRoomIDStr := chi.URLParam(r, "chat_room_id")
+		chatRoomID, err := uuid.Parse(chatRoomIDStr)
+		if err != nil {
+			apiutils.RespondWithError(h.ZapLogger, w, http.StatusBadRequest, "Could not parse chatroom id")
+			return
+		}
+
+		messages, err := h.DB.GetMessages(r.Context(), chatRoomID)
+		if err != nil {
+			apiutils.RespondWithError(h.ZapLogger, w, http.StatusInternalServerError, "Could not get messages")
+			return
+		}
+
+		apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, handlers.DatabaseMessagesToMessages(messages))
+	}
+}
