@@ -50,7 +50,7 @@ func CreateChatRoom(h *handlers.Handlers) http.HandlerFunc {
 				apiutils.RespondWithError(h.ZapLogger, w, http.StatusInternalServerError, "Failed to create chatroom")
 				return
 			}
-			apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, chatRoom)
+			apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, handlers.DatabaseChatRoomToChatRoom(chatRoom))
 		}
 		if role == "customer" {
 			chatRoom, err := h.DB.CreateChatRoom(r.Context(), database.CreateChatRoomParams{
@@ -64,7 +64,7 @@ func CreateChatRoom(h *handlers.Handlers) http.HandlerFunc {
 				apiutils.RespondWithError(h.ZapLogger, w, http.StatusInternalServerError, "Failed to create chatroom")
 				return
 			}
-			apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, chatRoom)
+			apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, handlers.DatabaseChatRoomToChatRoom(chatRoom))
 		}
 
 	}
