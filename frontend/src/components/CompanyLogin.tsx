@@ -27,26 +27,24 @@ export default function CompanyLogin() {
 		}
 	}
 	return (
-		< div className="flex flex-col items-center justify-center h-screen" >
-			<form onSubmit={handleCompanyLogin} className="flex flex-col gap-2">
-				<input
-					className="border p-2"
-					placeholder="email"
-					value={email}
-					onChange={(s) => setEmail(s.target.value)}
-				/>
-				<input
-					className="border p-2"
-					placeholder="Password"
-					type="password"
-					value={password}
-					onChange={(s) => setPassword(s.target.value)}
-				/>
-				<button className="bg-blue-500 text-white p-2 rounded" type="submit">
-					Login
-				</button>
-			</form>
-		</div >
+		<form onSubmit={handleCompanyLogin} className="flex flex-col gap-4 w-full max-w-sm">
+			<input
+				className="border p-2"
+				placeholder="email"
+				value={email}
+				onChange={(s) => setEmail(s.target.value)}
+			/>
+			<input
+				className="border p-2"
+				placeholder="Password"
+				type="password"
+				value={password}
+				onChange={(s) => setPassword(s.target.value)}
+			/>
+			<button className="bg-blue-500 text-white p-2 rounded" type="submit">
+				Login
+			</button>
+		</form>
 	);
 }
 

@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import CustomerSignup from "../components/CustomerSignup";
-import CompanySignup from "../components/CompanySignup";
+import CompanyLogin from "../components/CompanyLogin";
+import CustomerLogin from "../components/CustomerLogin";
 import { Navbar } from "../components/Navbar";
 
-export default function Signup() {
+export default function Login() {
 	const [mode, setMode] = useState<"customer" | "company">("customer");
 	const switchMode = () => setMode(mode === "customer" ? "company" : "customer");
+
 	return (
 		<>
 			<Navbar />
@@ -22,9 +23,9 @@ export default function Signup() {
 								transition={{ duration: 0.5 }}
 							>
 								<h2 className="text-2xl font-bold mb-4 text-blue-700">Customer Login</h2>
-								<CustomerSignup />
+								<CustomerLogin />
 								<button className="mt-4 text-blue-600 hover:underline" onClick={switchMode}>
-									Switch to Company Signup
+									Switch to Company login
 								</button>
 							</motion.div>
 						)}
@@ -42,9 +43,9 @@ export default function Signup() {
 								transition={{ duration: 0.5 }}
 							>
 								<h2 className="text-2xl font-bold mb-4 text-indigo-700">Company Login</h2>
-								<CompanySignup />
+								<CompanyLogin />
 								<button className="mt-4 text-indigo-600 hover:underline" onClick={switchMode}>
-									Switch to Customer Signup
+									Switch to Customer login
 								</button>
 							</motion.div>
 						)}
