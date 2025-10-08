@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useAuthStore } from "../store/auth";
 import type { Customer, Company } from "../store/auth";
 import { apiFetch } from "../api/client";
+import { Navbar } from "../components/Navbar";
 
 export default function ProfileEdit() {
 	const { role, customer, company, setCompany, setCustomer } = useAuthStore();
@@ -72,56 +73,59 @@ export default function ProfileEdit() {
 
 	if (role === "customer" && customer) {
 		return (
-			<div className="p-4">
-				<h1 className="text-x1 font-bold">Customer Profile</h1>
-				<img src={customer.photourl ?? ""} alt="Profile" className="w-24 h-24 rounded-full" />
-				<p>Email: {customer.email}</p>
-				<label>
-					<input type="text" name="name"
-						value={formData.name ?? ""}
-						onChange={handleChange}
-						disabled={!editing}
-						className="border p-2 w-full"
-					/>
-				</label>
-				<label>
-					<input type="text" name="description"
-						value={formData.description ?? ""}
-						onChange={handleChange}
-						disabled={!editing}
-						className="border p-2 w-full"
-					/>
-				</label>
-				<label>
-					<input type="text" name="country"
-						value={formData.country ?? ""}
-						onChange={handleChange}
-						disabled={!editing}
-						className="border p-2 w-full"
-					/>
-				</label>
-				{!editing ? (
-					<button
-						onClick={() => setEditing(true)}
-						className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
-					>edit
-					</button>
-				) : (
-					<div>
-						<button onClick={handleSave}
-							className="mt-4 px-4 py-2 bg-green-500 text-white rounded"
-						>
-							save
+			<>
+				<Navbar />
+				<div className="p-4">
+					<h1 className="text-x1 font-bold">Customer Profile</h1>
+					<img src={customer.photourl ?? ""} alt="Profile" className="w-24 h-24 rounded-full" />
+					<p>Email: {customer.email}</p>
+					<label>
+						<input type="text" name="name"
+							value={formData.name ?? ""}
+							onChange={handleChange}
+							disabled={!editing}
+							className="border p-2 w-full"
+						/>
+					</label>
+					<label>
+						<input type="text" name="description"
+							value={formData.description ?? ""}
+							onChange={handleChange}
+							disabled={!editing}
+							className="border p-2 w-full"
+						/>
+					</label>
+					<label>
+						<input type="text" name="country"
+							value={formData.country ?? ""}
+							onChange={handleChange}
+							disabled={!editing}
+							className="border p-2 w-full"
+						/>
+					</label>
+					{!editing ? (
+						<button
+							onClick={() => setEditing(true)}
+							className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+						>edit
 						</button>
-						<button onClick={() => setEditing(false)}
-							className="mt-4 px-4 py-2 bg-gray-500 text-white rounded"
-						>
-							cancel
-						</button>
+					) : (
+						<div>
+							<button onClick={handleSave}
+								className="mt-4 px-4 py-2 bg-green-500 text-white rounded"
+							>
+								save
+							</button>
+							<button onClick={() => setEditing(false)}
+								className="mt-4 px-4 py-2 bg-gray-500 text-white rounded"
+							>
+								cancel
+							</button>
 
-					</div>
-				)}
-			</div>
+						</div>
+					)}
+				</div>
+			</>
 		);
 	}
 	if (role === "company" && company) {
