@@ -2,9 +2,10 @@ package handlers
 
 import (
 	"database/sql"
+	"time"
+
 	"github.com/LaurelEdison/bizbridge/internal/database"
 	"github.com/google/uuid"
-	"time"
 )
 
 type Customer struct {
@@ -47,6 +48,13 @@ func DatabaseCompanyToCompany(dbCompany database.Company) Company {
 		Photourl:    &dbCompany.Photourl.String,
 		Username:    &dbCompany.Username.String,
 	}
+}
+func DatabaseCompaniesToCompanies(dbCompanies []database.Company) []Company {
+	companies := []Company{}
+	for _, dbCompany := range dbCompanies {
+		companies = append(companies, DatabaseCompanyToCompany(dbCompany))
+	}
+	return companies
 }
 
 type ChatRoom struct {
