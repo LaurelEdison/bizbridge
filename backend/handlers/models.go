@@ -49,22 +49,25 @@ func DatabaseCompanyToCompany(dbCompany database.Company) Company {
 	}
 }
 
-// TODO: Add messages and chat rooms model
 type ChatRoom struct {
-	ID         uuid.UUID `json:"id"`
-	CustomerID uuid.UUID `json:"customer_id"`
-	CompanyID  uuid.UUID `json:"company_id"`
-	CreatedAt  time.Time `json:"created_at"`
-	UpdatedAt  time.Time `json:"updated_at"`
+	ID           uuid.UUID `json:"id"`
+	CustomerID   uuid.UUID `json:"customer_id"`
+	CustomerName string    `json:"customer_name"`
+	CompanyID    uuid.UUID `json:"company_id"`
+	CompanyName  string    `json:"company_name"`
+	CreatedAt    time.Time `json:"created_at"`
+	UpdatedAt    time.Time `json:"updated_at"`
 }
 
 func DatabaseChatRoomToChatRoom(dbChatRoom database.ChatRoom) ChatRoom {
 	return ChatRoom{
-		ID:         dbChatRoom.ID,
-		CustomerID: dbChatRoom.CustomerID,
-		CompanyID:  dbChatRoom.CompanyID,
-		CreatedAt:  dbChatRoom.CreatedAt,
-		UpdatedAt:  dbChatRoom.UpdatedAt,
+		ID:           dbChatRoom.ID,
+		CustomerID:   dbChatRoom.CustomerID,
+		CustomerName: dbChatRoom.CustomerName,
+		CompanyID:    dbChatRoom.CompanyID,
+		CompanyName:  dbChatRoom.CompanyName,
+		CreatedAt:    dbChatRoom.CreatedAt,
+		UpdatedAt:    dbChatRoom.UpdatedAt,
 	}
 }
 
@@ -76,11 +79,17 @@ func DatabaseChatRoomsToChatRooms(dbChatRooms []database.ChatRoom) []ChatRoom {
 	return chatrooms
 }
 
-// TODO: Add more metadata to chatmessages, sender id, name/username
+type User struct {
+	ID    uuid.UUID `json:"id"`
+	Name  string    `json:"name"`
+	Email string    `json:"email"`
+	Role  string    `json:"role"`
+}
+
 type Message struct {
 	ID         uuid.UUID `json:"id"`
 	ChatRoomID uuid.UUID `json:"chat_room_id"`
-	SenderID   uuid.UUID `json:"room_id"`
+	Sender     User      `json:"sender"`
 	Content    *string   `json:"content,omitempty"`
 	FileUrl    *string   `json:"file_url,omitempty"`
 	FileName   *string   `json:"file_name,omitempty"`
@@ -93,7 +102,7 @@ func DatabaseMessageToMessage(dbMessage database.Message) Message {
 	return Message{
 		ID:         dbMessage.ID,
 		ChatRoomID: dbMessage.ChatRoomID,
-		SenderID:   dbMessage.SenderID,
+		Sender:     User{ID: dbMessage.SenderID, Role: dbMessage.Role},
 		Content:    &dbMessage.Content.String,
 		FileUrl:    &dbMessage.FileUrl.String,
 		FileName:   &dbMessage.FileUrl.String,
