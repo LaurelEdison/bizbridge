@@ -27,6 +27,7 @@ func CreateMessage(h *handlers.Handlers) http.HandlerFunc {
 			apiutils.RespondWithError(h.ZapLogger, w, http.StatusUnauthorized, "Invalid id")
 			return
 		}
+		role := claims["role"].(string)
 
 		chatRoomIDStr := chi.URLParam(r, "chat_room_id")
 		chatRoomID, err := uuid.Parse(chatRoomIDStr)
@@ -48,23 +49,43 @@ func CreateMessage(h *handlers.Handlers) http.HandlerFunc {
 			apiutils.RespondWithError(h.ZapLogger, w, http.StatusBadRequest, "Could not decode json")
 			return
 		}
-		Message, err := h.DB.CreateMessage(r.Context(), database.CreateMessageParams{
+		DBMessage, err := h.DB.CreateMessage(r.Context(), database.CreateMessageParams{
 			ID:         uuid.New(),
 			ChatRoomID: chatRoomID,
 			SenderID:   id,
 			Content:    sql.NullString{String: params.Content, Valid: true},
+			Role:       role,
 		})
 		if err != nil {
 			apiutils.RespondWithError(h.ZapLogger, w, http.StatusInternalServerError, "Could not create message")
 			return
 		}
+		message := handlers.DatabaseMessageToMessage(DBMessage)
+		if role == "customer" {
+			customer, _ := h.DB.GetCustomerByID(r.Context(), DBMessage.SenderID)
+			message.Sender = handlers.User{
+				ID:    customer.ID,
+				Role:  role,
+				Name:  customer.Name,
+				Email: customer.Email,
+			}
+		}
+		if role == "company" {
+			company, _ := h.DB.GetCompanyByID(r.Context(), DBMessage.SenderID)
+			message.Sender = handlers.User{
+				ID:    company.ID,
+				Role:  role,
+				Name:  company.Name,
+				Email: company.Email,
+			}
+		}
 		h.Hub.BroadcastMsg(ws.Message{
 			UserID:     id,
 			ChatRoomID: chatRoomID,
 			Type:       "chat",
-			Payload:    handlers.DatabaseMessageToMessage(Message),
+			Payload:    message,
 		})
-		apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, handlers.DatabaseMessageToMessage(Message))
+		apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, message)
 	}
 }
 
@@ -77,12 +98,39 @@ func GetMessages(h *handlers.Handlers) http.HandlerFunc {
 			return
 		}
 
-		messages, err := h.DB.GetMessages(r.Context(), chatRoomID)
+		DBMessages, err := h.DB.GetMessages(r.Context(), chatRoomID)
 		if err != nil {
 			apiutils.RespondWithError(h.ZapLogger, w, http.StatusInternalServerError, "Could not get messages")
 			return
 		}
 
-		apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, handlers.DatabaseMessagesToMessages(messages))
+		messages := make([]handlers.Message, 0, len(DBMessages))
+		for _, DBMessage := range DBMessages {
+			msg := handlers.DatabaseMessageToMessage(DBMessage)
+			var sender handlers.User
+			switch DBMessage.Role {
+			case "customer":
+				customer, _ := h.DB.GetCustomerByID(r.Context(), DBMessage.SenderID)
+				sender = handlers.User{
+					ID:    customer.ID,
+					Name:  customer.Name,
+					Email: customer.Email,
+					Role:  "customer",
+				}
+
+			case "company":
+				company, _ := h.DB.GetCompanyByID(r.Context(), DBMessage.SenderID)
+				sender = handlers.User{
+					ID:    company.ID,
+					Name:  company.Name,
+					Email: company.Email,
+					Role:  "customer",
+				}
+			}
+			msg.Sender = sender
+			messages = append(messages, msg)
+		}
+
+		apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, messages)
 	}
 }
