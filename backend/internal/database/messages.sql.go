@@ -13,9 +13,9 @@ import (
 )
 
 const createMessage = `-- name: CreateMessage :one
-INSERT INTO messages(id, chat_room_id, sender_id, content, sent_at)
-VALUES($1, $2, $3, $4, $5)
-RETURNING id, chat_room_id, sender_id, content, file_url, file_name, file_size, sent_at, is_read
+INSERT INTO messages(id, chat_room_id, sender_id, content, sent_at, role)
+VALUES($1, $2, $3, $4, $5, $6)
+RETURNING id, chat_room_id, sender_id, role, content, file_url, file_name, file_size, sent_at, is_read
 `
 
 type CreateMessageParams struct {
@@ -24,6 +24,7 @@ type CreateMessageParams struct {
 	SenderID   uuid.UUID
 	Content    sql.NullString
 	SentAt     sql.NullTime
+	Role       string
 }
 
 func (q *Queries) CreateMessage(ctx context.Context, arg CreateMessageParams) (Message, error) {
@@ -33,12 +34,14 @@ func (q *Queries) CreateMessage(ctx context.Context, arg CreateMessageParams) (M
 		arg.SenderID,
 		arg.Content,
 		arg.SentAt,
+		arg.Role,
 	)
 	var i Message
 	err := row.Scan(
 		&i.ID,
 		&i.ChatRoomID,
 		&i.SenderID,
+		&i.Role,
 		&i.Content,
 		&i.FileUrl,
 		&i.FileName,
@@ -50,7 +53,7 @@ func (q *Queries) CreateMessage(ctx context.Context, arg CreateMessageParams) (M
 }
 
 const getMessages = `-- name: GetMessages :many
-SELECT id, chat_room_id, sender_id, content, file_url, file_name, file_size, sent_at, is_read FROM messages WHERE chat_room_id = $1
+SELECT id, chat_room_id, sender_id, role, content, file_url, file_name, file_size, sent_at, is_read FROM messages WHERE chat_room_id = $1
 `
 
 func (q *Queries) GetMessages(ctx context.Context, chatRoomID uuid.UUID) ([]Message, error) {
@@ -66,6 +69,7 @@ func (q *Queries) GetMessages(ctx context.Context, chatRoomID uuid.UUID) ([]Mess
 			&i.ID,
 			&i.ChatRoomID,
 			&i.SenderID,
+			&i.Role,
 			&i.Content,
 			&i.FileUrl,
 			&i.FileName,

@@ -13,17 +13,20 @@ import (
 )
 
 const createChatRoom = `-- name: CreateChatRoom :one
-INSERT INTO chat_rooms(id, customer_id, company_id, created_at, updated_at)
-VALUES($1, $2, $3, $4, $5)
-RETURNING id, customer_id, company_id, created_at, updated_at
+INSERT INTO chat_rooms(id, customer_id, company_id, created_at, updated_at, company_name, customer_name)
+VALUES($1, $2, $3, $4, $5, $6, $7)
+ON CONFLICT (company_id, customer_id) DO UPDATE SET updated_at = EXCLUDED.updated_at
+RETURNING id, customer_id, customer_name, company_id, company_name, created_at, updated_at
 `
 
 type CreateChatRoomParams struct {
-	ID         uuid.UUID
-	CustomerID uuid.UUID
-	CompanyID  uuid.UUID
-	CreatedAt  time.Time
-	UpdatedAt  time.Time
+	ID           uuid.UUID
+	CustomerID   uuid.UUID
+	CompanyID    uuid.UUID
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
+	CompanyName  string
+	CustomerName string
 }
 
 func (q *Queries) CreateChatRoom(ctx context.Context, arg CreateChatRoomParams) (ChatRoom, error) {
@@ -33,12 +36,16 @@ func (q *Queries) CreateChatRoom(ctx context.Context, arg CreateChatRoomParams) 
 		arg.CompanyID,
 		arg.CreatedAt,
 		arg.UpdatedAt,
+		arg.CompanyName,
+		arg.CustomerName,
 	)
 	var i ChatRoom
 	err := row.Scan(
 		&i.ID,
 		&i.CustomerID,
+		&i.CustomerName,
 		&i.CompanyID,
+		&i.CompanyName,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -46,7 +53,7 @@ func (q *Queries) CreateChatRoom(ctx context.Context, arg CreateChatRoomParams) 
 }
 
 const getUserChatRooms = `-- name: GetUserChatRooms :many
-SELECT id, customer_id, company_id, created_at, updated_at FROM chat_rooms WHERE customer_id = $1 or company_id = $1
+SELECT id, customer_id, customer_name, company_id, company_name, created_at, updated_at FROM chat_rooms WHERE customer_id = $1 or company_id = $1
 `
 
 func (q *Queries) GetUserChatRooms(ctx context.Context, customerID uuid.UUID) ([]ChatRoom, error) {
@@ -61,7 +68,9 @@ func (q *Queries) GetUserChatRooms(ctx context.Context, customerID uuid.UUID) ([
 		if err := rows.Scan(
 			&i.ID,
 			&i.CustomerID,
+			&i.CustomerName,
 			&i.CompanyID,
+			&i.CompanyName,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
