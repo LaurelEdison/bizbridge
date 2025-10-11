@@ -22,6 +22,7 @@ export default function CustomerLogin() {
 
 			const customer = await apiFetch<Customer>("/bizbridge/customer/me");
 			useAuthStore.getState().setCustomer(customer);
+			window.location.href = "/";
 
 		} catch (err) {
 			console.error("Login failed", err);

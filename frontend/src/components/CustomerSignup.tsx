@@ -9,7 +9,7 @@ export default function CustomerSignup() {
 	const [country, setCountry] = useState("");
 	const [description, setDescription] = useState("");
 	const setToken = useAuthStore((s) => s.setToken);
-	async function handleCustomerLogin(e: React.FormEvent) {
+	async function handleCustomerSignup(e: React.FormEvent) {
 		e.preventDefault();
 		try {
 			const customer = await apiFetch<Customer>("bizbridge/customer/", {
@@ -27,13 +27,14 @@ export default function CustomerSignup() {
 			useAuthStore.getState().setRole(role);
 
 			useAuthStore.getState().setCustomer(customer);
+			window.location.href = "/";
 
 		} catch (err) {
 			console.error("Login failed", err);
 		}
 	}
 	return (
-		<form onSubmit={handleCustomerLogin} className="flex flex-col gap-4 w-full max-w-sm">
+		<form onSubmit={handleCustomerSignup} className="flex flex-col gap-4 w-full max-w-sm">
 			<input
 				className="border p-2"
 				placeholder="Name"

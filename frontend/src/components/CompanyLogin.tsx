@@ -19,8 +19,12 @@ export default function CompanyLogin() {
 
 			const role = "company";
 			useAuthStore.getState().setRole(role);
+
 			const company = await apiFetch<Company>("/bizbridge/company/me");
 			useAuthStore.getState().setCompany(company);
+
+
+			window.location.href = "/";
 
 		} catch (err) {
 			console.error("Login failed", err);
