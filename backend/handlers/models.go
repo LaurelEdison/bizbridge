@@ -118,3 +118,41 @@ func DatabaseMessagesToMessages(dbMessages []database.Message) []Message {
 	}
 	return messages
 }
+
+type ProfileSector struct {
+	CompanyID uuid.UUID `json:"company_id"`
+	SectorID  uuid.UUID `json:"sector_id"`
+}
+
+func DatabaseProfileSectorToProfileSector(dbProfileSector database.ProfileSector) ProfileSector {
+	return ProfileSector{
+		CompanyID: dbProfileSector.CompanyID,
+		SectorID:  dbProfileSector.SectorID,
+	}
+}
+func DatabaseProfileSectorsToProfileSectors(dbProfileSectors []database.ProfileSector) []ProfileSector {
+	ProfileSectors := []ProfileSector{}
+	for _, dbProfileSector := range dbProfileSectors {
+		ProfileSectors = append(ProfileSectors, DatabaseProfileSectorToProfileSector(dbProfileSector))
+	}
+	return ProfileSectors
+}
+
+type Sector struct {
+	ID   uuid.UUID `json:"id"`
+	Name string    `json:"name"`
+}
+
+func DatabaseSectorToSectors(dbSector database.Sector) Sector {
+	return Sector{
+		ID:   dbSector.ID,
+		Name: dbSector.Name,
+	}
+}
+func DatabaseSectorsToSectors(dbSectors []database.Sector) []Sector {
+	sectors := []Sector{}
+	for _, dbSector := range dbSectors {
+		sectors = append(sectors, DatabaseSectorToSectors(dbSector))
+	}
+	return sectors
+}
