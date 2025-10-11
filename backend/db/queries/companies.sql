@@ -7,6 +7,15 @@ SELECT * FROM companies WHERE id = $1;
 -- name: GetCompanyByEmail :one
 SELECT * FROM companies WHERE email = $1;
 
+-- name: SearchCompanies :many
+SELECT DISTINCT c.*
+FROM companies c
+LEFT JOIN profile_sectors ps ON ps.company_id = c.id
+LEFT JOIN sectors s ON s.id = ps.sector_id
+WHERE
+  ($1 = '' OR s.name ILIKE '%' || $1 || '%')
+  AND ($2 = '' OR c.name ILIKE '%' || $2 || '%')
+ORDER BY c.name;
 
 -- name: UpdateCompanyName :exec
 UPDATE companies

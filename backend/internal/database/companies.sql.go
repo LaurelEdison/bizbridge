@@ -105,6 +105,56 @@ func (q *Queries) GetCompanyByID(ctx context.Context, id uuid.UUID) (Company, er
 	return i, err
 }
 
+const searchCompanies = `-- name: SearchCompanies :many
+SELECT DISTINCT c.id, c.name, c.email, c.password_hash, c.address, c.description, c.photourl, c.username, c.created_at, c.updated_at
+FROM companies c
+LEFT JOIN profile_sectors ps ON ps.company_id = c.id
+LEFT JOIN sectors s ON s.id = ps.sector_id
+WHERE
+  ($1 = '' OR s.name ILIKE '%' || $1 || '%')
+  AND ($2 = '' OR c.name ILIKE '%' || $2 || '%')
+ORDER BY c.name
+`
+
+type SearchCompaniesParams struct {
+	Column1 interface{}
+	Column2 interface{}
+}
+
+func (q *Queries) SearchCompanies(ctx context.Context, arg SearchCompaniesParams) ([]Company, error) {
+	rows, err := q.db.QueryContext(ctx, searchCompanies, arg.Column1, arg.Column2)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Company
+	for rows.Next() {
+		var i Company
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Email,
+			&i.PasswordHash,
+			&i.Address,
+			&i.Description,
+			&i.Photourl,
+			&i.Username,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const updateCompanyAddress = `-- name: UpdateCompanyAddress :exec
 UPDATE companies
 SET address = $2,

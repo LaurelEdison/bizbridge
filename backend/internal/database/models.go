@@ -12,11 +12,13 @@ import (
 )
 
 type ChatRoom struct {
-	ID         uuid.UUID
-	CustomerID uuid.UUID
-	CompanyID  uuid.UUID
-	CreatedAt  time.Time
-	UpdatedAt  time.Time
+	ID           uuid.UUID
+	CustomerID   uuid.UUID
+	CustomerName string
+	CompanyID    uuid.UUID
+	CompanyName  string
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
 }
 
 type Company struct {
@@ -48,10 +50,21 @@ type Message struct {
 	ID         uuid.UUID
 	ChatRoomID uuid.UUID
 	SenderID   uuid.UUID
+	Role       string
 	Content    sql.NullString
 	FileUrl    sql.NullString
 	FileName   sql.NullString
 	FileSize   sql.NullString
 	SentAt     sql.NullTime
 	IsRead     sql.NullBool
+}
+
+type ProfileSector struct {
+	CompanyID uuid.UUID
+	SectorID  uuid.UUID
+}
+
+type Sector struct {
+	ID   uuid.UUID
+	Name string
 }

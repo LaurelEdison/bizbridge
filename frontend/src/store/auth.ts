@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { persist } from 'zustand/middleware';
 
 export type Customer = {
 	id: string;
@@ -29,17 +30,23 @@ type AuthState = {
 	setCustomer: (c: Customer | null) => void;
 	company: Company | null;
 	setCompany: (c: Company | null) => void;
+	logout: () => void;
 };
 
-export const useAuthStore = create<AuthState>((set) => ({
-	token: null,
-	setToken: (token) => set({ token }),
-	role: null,
-	setRole: (role) => set({ role }),
-	customer: null,
-	setCustomer: (c) => set({ customer: c }),
-	company: null,
-	setCompany: (c) => set({ company: c })
-}))
+export const useAuthStore = create<AuthState>()(persist(
+	(set) => ({
+		token: null,
+		setToken: (token) => set({ token }),
+		role: null,
+		setRole: (role) => set({ role }),
+		customer: null,
+		setCustomer: (c) => set({ customer: c }),
+		company: null,
+		logout: () => set({ token: null, role: null, company: null }), setCompany: (c) => set({ company: c })
+	}),
+	{
+		name: "auth-storage",
+	}),
+)
 
 

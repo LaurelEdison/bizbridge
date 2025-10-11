@@ -10,6 +10,7 @@ import (
 	"github.com/LaurelEdison/bizbridge/handlers/company"
 	"github.com/LaurelEdison/bizbridge/handlers/customer"
 	"github.com/LaurelEdison/bizbridge/handlers/healthz"
+	"github.com/LaurelEdison/bizbridge/handlers/sector"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
 	"go.uber.org/zap"
@@ -17,6 +18,10 @@ import (
 
 func SetupRoutes(h *handlers.Handlers, router chi.Router) {
 	router.Get("/healthz", healthz.HandlerHealth(h))
+
+	router.Get("/search", company.SearchCompanies(h))
+
+	router.Get("/sector", sector.GetAllSectors(h))
 
 	router.Post("/customer", customer.CreateCustomer(h))
 	router.Post("/company", company.CreateCompany(h))
@@ -35,6 +40,9 @@ func SetupRoutes(h *handlers.Handlers, router chi.Router) {
 
 		router.Get("/company/me", company.GetMe(h))
 		router.Patch("/company/update", company.UpdateCompanyDetails(h))
+		router.Post("/company/sector", sector.AddSectorLink(h))
+		router.Delete("/company/{company_id}/{sector_id}", sector.RemoveSectorLink(h))
+		router.Get("/company/{company_id}/sector", sector.GetSectorsByCompany(h))
 
 		router.Post("/social/chat", chat.CreateChatRoom(h))
 		router.Get("/social/chat", chat.GetUserChatRooms(h))

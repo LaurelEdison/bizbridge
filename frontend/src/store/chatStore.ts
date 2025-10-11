@@ -1,8 +1,16 @@
 import { create } from "zustand";
 //TODO: Add more metadata to chatmessages, sender id, name/username
+
+export type Sender = {
+	id: string;
+	name: string;
+	email: string;
+	role: string;
+}
 export type ChatMessage = {
 	id: string;
 	chat_room_id: string;
+	sender: Sender;
 	content?: string;
 	file_url?: string;
 	file_name?: string;
@@ -13,7 +21,9 @@ export type ChatMessage = {
 export type ChatRoom = {
 	id: string;
 	customer_id: string;
+	customer_name: string;
 	company_id: string;
+	company_name: string;
 	updated_at: string;
 	created_at: string;
 	messages: ChatMessage[];

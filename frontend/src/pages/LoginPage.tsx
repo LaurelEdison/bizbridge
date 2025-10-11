@@ -9,9 +9,9 @@ export default function Login() {
 	const switchMode = () => setMode(mode === "customer" ? "company" : "customer");
 
 	return (
-		<>
+		<div className="flex flex-col h-screen w-full overflow-hidden">
 			<Navbar />
-			<div className="flex h-screen w-full overflow-hidden">
+			<div className="flex flex-1">
 				<div className={`flex-1 flex items-center justify-center ${mode === "customer" ? "bg-blue-50" : "bg-gray-200"}`}>
 					<AnimatePresence mode="wait">
 						{mode === "customer" && (
@@ -52,6 +52,6 @@ export default function Login() {
 					</AnimatePresence>
 				</div>
 			</div>
-		</>
+		</div>
 	)
 }

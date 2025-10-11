@@ -1,18 +1,21 @@
 import { useState } from "react";
 import { useAuthStore } from "../store/auth";
 import { apiFetch } from "../api/client";
+import { SectorSelector } from "./SectorSelector";
 import type { Company } from "../store/auth";
+import { addCompanySector } from "../api/sector";
 //TODO: Switch to access+refresh token
 export default function CompanySignup() {
 	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [address, setAddress] = useState("");
+	const [selectedSectors, setSelectedSectors] = useState<string[]>([])
 	const setToken = useAuthStore((s) => s.setToken);
-	async function handleCompanyLogin(e: React.FormEvent) {
+	async function handleCompanySignup(e: React.FormEvent) {
 		e.preventDefault();
 		try {
-			const company = await apiFetch<Company>("/bizbridge/company/login", {
+			const company = await apiFetch<Company>("/bizbridge/company", {
 				method: "POST",
 				body: JSON.stringify({ name, email, password, address }),
 			});
@@ -26,13 +29,17 @@ export default function CompanySignup() {
 			const role = "company";
 			useAuthStore.getState().setRole(role);
 			useAuthStore.getState().setCompany(company);
+			for (const sectorID of selectedSectors) {
+				await addCompanySector(sectorID);
+			}
+			window.location.href = "/";
 
 		} catch (err) {
 			console.error("Login failed", err);
 		}
 	}
 	return (
-		<form onSubmit={handleCompanyLogin} className="flex flex-col gap-4 w-full max-w-sm">
+		<form onSubmit={handleCompanySignup} className="flex flex-col gap-4 w-full max-w-sm">
 			<input
 				className="border p-2"
 				placeholder="Name"
@@ -58,6 +65,7 @@ export default function CompanySignup() {
 				value={address}
 				onChange={(s) => setAddress(s.target.value)}
 			/>
+			<SectorSelector onChange={setSelectedSectors} selected={selectedSectors} />
 			<button className="bg-blue-500 text-white p-2 rounded" type="submit">
 				Sign up!
 			</button>
