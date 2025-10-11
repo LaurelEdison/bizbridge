@@ -10,6 +10,7 @@ import (
 	"github.com/LaurelEdison/bizbridge/handlers/auth"
 	"github.com/LaurelEdison/bizbridge/internal/database"
 	"github.com/google/uuid"
+	"go.uber.org/zap"
 )
 
 func CreateChatRoom(h *handlers.Handlers) http.HandlerFunc {
@@ -39,12 +40,16 @@ func CreateChatRoom(h *handlers.Handlers) http.HandlerFunc {
 		}
 
 		if role == "company" {
+			company, _ := h.DB.GetCompanyByID(r.Context(), id)
+			customer, _ := h.DB.GetCustomerByID(r.Context(), params.Recipient)
 			chatRoom, err := h.DB.CreateChatRoom(r.Context(), database.CreateChatRoomParams{
-				ID:         uuid.New(),
-				CustomerID: params.Recipient,
-				CompanyID:  id,
-				CreatedAt:  time.Now(),
-				UpdatedAt:  time.Now(),
+				ID:           uuid.New(),
+				CreatedAt:    time.Now(),
+				UpdatedAt:    time.Now(),
+				CustomerID:   customer.ID,
+				CustomerName: customer.Name,
+				CompanyID:    company.ID,
+				CompanyName:  company.Name,
 			})
 			if err != nil {
 				apiutils.RespondWithError(h.ZapLogger, w, http.StatusInternalServerError, "Failed to create chatroom")
@@ -53,15 +58,20 @@ func CreateChatRoom(h *handlers.Handlers) http.HandlerFunc {
 			apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, handlers.DatabaseChatRoomToChatRoom(chatRoom))
 		}
 		if role == "customer" {
+			company, _ := h.DB.GetCompanyByID(r.Context(), params.Recipient)
+			customer, _ := h.DB.GetCustomerByID(r.Context(), id)
 			chatRoom, err := h.DB.CreateChatRoom(r.Context(), database.CreateChatRoomParams{
-				ID:         uuid.New(),
-				CustomerID: id,
-				CompanyID:  params.Recipient,
-				CreatedAt:  time.Now(),
-				UpdatedAt:  time.Now(),
+				ID:           uuid.New(),
+				CreatedAt:    time.Now(),
+				UpdatedAt:    time.Now(),
+				CustomerID:   customer.ID,
+				CustomerName: customer.Name,
+				CompanyID:    company.ID,
+				CompanyName:  company.Name,
 			})
 			if err != nil {
 				apiutils.RespondWithError(h.ZapLogger, w, http.StatusInternalServerError, "Failed to create chatroom")
+				h.ZapLogger.Info("Error", zap.Error(err))
 				return
 			}
 			apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, handlers.DatabaseChatRoomToChatRoom(chatRoom))
