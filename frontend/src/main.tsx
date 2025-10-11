@@ -7,6 +7,7 @@ import ProfileEdit from './pages/ProfileEdit.tsx'
 import Login from './pages/LoginPage.tsx'
 import Signup from './pages/SignUp.tsx'
 import { ChatPage } from './pages/ChatPage.tsx'
+import { SearchPage } from './pages/SearchPage.tsx'
 
 createRoot(document.getElementById('root')!).render(
 	<StrictMode>
@@ -17,6 +18,7 @@ createRoot(document.getElementById('root')!).render(
 				<Route path='/login' element={<Login />} />
 				<Route path='/register' element={<Signup />} />
 				<Route path='/chat' element={<ChatPage />} />
+				<Route path='/search' element={<SearchPage />} />
 			</Routes>
 		</BrowserRouter>
 
