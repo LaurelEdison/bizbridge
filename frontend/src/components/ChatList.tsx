@@ -7,7 +7,6 @@ type Props = {
 	selectedRoomID?: string | null;
 	onSelect: (room: ChatRoom) => void
 };
-
 export function ChatList({ selectedRoomID, onSelect }: Props) {
 	const [rooms, setRooms] = useState<ChatRoom[]>([])
 	const { role, customer, company } = useAuthStore();
@@ -15,50 +14,40 @@ export function ChatList({ selectedRoomID, onSelect }: Props) {
 	const myID = role === "customer" ? customer?.id : company?.id;
 
 	useEffect(() => {
-		if (!role) {
-			console.log("Not logged in yet");
-			return
-		}
-		console.log("logged in now");
-		let mounted = true
+		if (!role) return;
+		let mounted = true;
 		getChatRooms()
 			.then((rs) => {
-				if (mounted) setRooms(rs)
+				if (mounted) setRooms(rs);
 			})
-			.catch((err) => {
-				console.error("Failed to fetch chat rooms ", err);
-
-			});
-		return () => {
-			mounted = false;
-		}
+			.catch((err) => console.error("Failed to fetch chat rooms", err));
+		return () => { mounted = false; }
 	}, [role, company?.id, customer?.id]);
 
 	return (
-		<div className="w-80 border-r overflow-auto">
-			<h3 className="p-4 font-semibold">Chats</h3>
-			<ul>
+		<div className="w-80 border-r border-gray-200 bg-white flex flex-col">
+			<ul className="flex-1 overflow-y-auto">
 				{rooms.map((room) => {
 					const customerID = room.customer_id;
 					const companyID = room.company_id;
-
-					const otherID =
+					const name =
 						myID && customerID && companyID
 							? myID === customerID
-								? companyID
-								: customerID
+								? room.company_name
+								: room.customer_name
 							: companyID ?? customerID ?? room.id;
-					const displayName = room.id ?? otherID
+					const displayName = name ?? room.id;
+					const isSelected = selectedRoomID === room.id;
+
 					return (
 						<li
 							key={room.id}
-							className={`p-3 hover:bg-gray-100 cursor-pointer ${selectedRoomID === room.id ? "bg-blue-50" : ""}`}
 							onClick={() => onSelect(room)}
+							className={`flex flex-col p-4 cursor-pointer transition-colors rounded-r-lg 
+                ${isSelected ? "bg-blue-100" : "hover:bg-gray-100"}`}
 						>
-							<div className="text-sm font-medium"> {displayName}</div>
-							<div className="text-xs text-gray-500">
-								Message preview here
-							</div>
+							<span className="font-medium text-gray-800">{displayName}</span>
+							<span className="text-sm text-gray-500 truncate">Message preview here</span>
 						</li>
 					)
 				})}
