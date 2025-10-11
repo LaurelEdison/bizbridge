@@ -172,3 +172,19 @@ func UpdateCompanyDetails(h *handlers.Handlers) http.HandlerFunc {
 		apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, handlers.DatabaseCompanyToCompany(updatedCompany))
 	}
 }
+func SearchCompanies(h *handlers.Handlers) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		sectorName := r.URL.Query().Get("sector")
+		name := r.URL.Query().Get("name")
+
+		companies, err := h.DB.SearchCompanies(r.Context(), database.SearchCompaniesParams{
+			Column1: sectorName,
+			Column2: name,
+		})
+		if err != nil {
+			apiutils.RespondWithError(h.ZapLogger, w, http.StatusInternalServerError, "Could not find companies")
+			return
+		}
+		apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, handlers.DatabaseCompaniesToCompanies(companies))
+	}
+}
