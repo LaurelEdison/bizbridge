@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"net/http"
+	"time"
 
 	"github.com/LaurelEdison/bizbridge/handlers"
 	"github.com/LaurelEdison/bizbridge/handlers/apiutils"
@@ -55,6 +56,7 @@ func CreateMessage(h *handlers.Handlers) http.HandlerFunc {
 			SenderID:   id,
 			Content:    sql.NullString{String: params.Content, Valid: true},
 			Role:       role,
+			SentAt:     sql.NullTime{Time: time.Now(), Valid: true},
 		})
 		if err != nil {
 			apiutils.RespondWithError(h.ZapLogger, w, http.StatusInternalServerError, "Could not create message")

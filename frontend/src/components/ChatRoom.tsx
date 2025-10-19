@@ -36,9 +36,9 @@ export function ChatRoom({ chatRoomID }: { chatRoomID: string }) {
 									{!isMine && m.sender.name}
 								</div>
 								<div className="text-sm">{m.content}</div>
-								{m.SentAt && (
+								{m.sent_at && (
 									<div className="text-xs text-gray-400 mt-1 text-right">
-										{new Date(m.SentAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+										{new Date(m.sent_at.Time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
 									</div>
 								)}
 							</div>

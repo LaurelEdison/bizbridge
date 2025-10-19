@@ -7,6 +7,12 @@ export type Sender = {
 	email: string;
 	role: string;
 }
+
+export type ValidTimeData = {
+	Time: string;
+	Valid: string;
+}
+
 export type ChatMessage = {
 	id: string;
 	chat_room_id: string;
@@ -15,8 +21,8 @@ export type ChatMessage = {
 	file_url?: string;
 	file_name?: string;
 	file_size?: string;
-	SentAt?: string;
-	IsRead?: string;
+	sent_at?: ValidTimeData;
+	is_read?: string;
 }
 export type ChatRoom = {
 	id: string;
