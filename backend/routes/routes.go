@@ -2,6 +2,7 @@ package routes
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/LaurelEdison/bizbridge/handlers"
 	"github.com/LaurelEdison/bizbridge/handlers/auth"
@@ -18,26 +19,30 @@ import (
 
 func SetupRoutes(h *handlers.Handlers, router chi.Router) {
 	router.Get("/healthz", healthz.HandlerHealth(h))
-
+	fileServer(router, "/uploads", http.Dir("./uploads"))
 	router.Get("/search", company.SearchCompanies(h))
-
 	router.Get("/sector", sector.GetAllSectors(h))
 
 	router.Post("/customer", customer.CreateCustomer(h))
-	router.Post("/company", company.CreateCompany(h))
-
-	router.Post("/company/login", company.Login(h))
 	router.Post("/customer/login", customer.Login(h))
+	router.Get("/customer/files", customer.GetFilesByCustomerID(h))
+
+	router.Post("/company", company.CreateCompany(h))
+	router.Post("/company/login", company.Login(h))
+	router.Get("/company/files", company.GetFilesByCompanyID(h))
 
 	router.Get("/social/{chat_room_id}", func(w http.ResponseWriter, r *http.Request) {
 		ws.ServeWS(h.Hub, h.ZapLogger, w, r)
 	})
+
 	router.Group(func(router chi.Router) {
 		router.Use(auth.JWTAuthMiddleware)
 
 		router.Get("/customer/me", customer.GetMe(h))
 		router.Patch("/customer/update", customer.UpdateCustomerDetails(h))
+		router.Post("/customer/upload", customer.FileUpload(h))
 
+		router.Post("/company/upload", company.FileUpload(h))
 		router.Get("/company/me", company.GetMe(h))
 		router.Patch("/company/update", company.UpdateCompanyDetails(h))
 		router.Post("/company/sector", sector.AddSectorLink(h))
@@ -52,6 +57,14 @@ func SetupRoutes(h *handlers.Handlers, router chi.Router) {
 	})
 
 	//TODO: Add router groups for admin only ops
+}
+
+func fileServer(r chi.Router, path string, root http.FileSystem) {
+	if strings.ContainsAny(path, "{}*") {
+		panic("File server does not permit URL parameters")
+	}
+	fs := http.StripPrefix("/bizbridge"+path, http.FileServer(root))
+	r.Get(path+"/*", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { fs.ServeHTTP(w, r) }))
 }
 
 // TODO: Change to less permissive in prod
