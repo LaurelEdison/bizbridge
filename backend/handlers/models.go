@@ -95,15 +95,15 @@ type User struct {
 }
 
 type Message struct {
-	ID         uuid.UUID `json:"id"`
-	ChatRoomID uuid.UUID `json:"chat_room_id"`
-	Sender     User      `json:"sender"`
-	Content    *string   `json:"content,omitempty"`
-	FileUrl    *string   `json:"file_url,omitempty"`
-	FileName   *string   `json:"file_name,omitempty"`
-	FileSize   *string   `json:"file_size,omitempty"`
-	SentAt     sql.NullTime
-	IsRead     sql.NullBool
+	ID         uuid.UUID    `json:"id"`
+	ChatRoomID uuid.UUID    `json:"chat_room_id"`
+	Sender     User         `json:"sender"`
+	Content    *string      `json:"content,omitempty"`
+	FileUrl    *string      `json:"file_url,omitempty"`
+	FileName   *string      `json:"file_name,omitempty"`
+	FileSize   *string      `json:"file_size,omitempty"`
+	SentAt     sql.NullTime `json:"sent_at"`
+	IsRead     sql.NullBool `json:"is_read"`
 }
 
 func DatabaseMessageToMessage(dbMessage database.Message) Message {
@@ -193,3 +193,30 @@ func DatabaseCompanyFilesToCompanyFiles(dbCompanyFiles []database.CompanyFile) [
 	return companyFiles
 }
 
+type CustomerFile struct {
+	ID         uuid.UUID `json:"id"`
+	CustomerID uuid.UUID `json:"customer_id"`
+	Category   string    `json:"category"`
+	FileName   string    `json:"file_name"`
+	Url        string    `json:"url"`
+	UploadedAt time.Time `json:"uploaded_at"`
+}
+
+func DatabaseCustomerFileToCustomerFile(dbCustomerFile database.CustomerFile) CustomerFile {
+	return CustomerFile{
+		ID:         dbCustomerFile.ID,
+		CustomerID: dbCustomerFile.CustomerID,
+		Category:   dbCustomerFile.Category,
+		FileName:   dbCustomerFile.FileName,
+		Url:        dbCustomerFile.Url,
+		UploadedAt: dbCustomerFile.UploadedAt,
+	}
+}
+
+func DatabaseCustomerFilesToCustomerFIles(dbCustomerFiles []database.CustomerFile) []CustomerFile {
+	CustomerFiles := []CustomerFile{}
+	for _, dbCustomerFile := range dbCustomerFiles {
+		CustomerFiles = append(CustomerFiles, DatabaseCustomerFileToCustomerFile(dbCustomerFile))
+	}
+	return CustomerFiles
+}
