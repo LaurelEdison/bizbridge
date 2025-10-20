@@ -4,6 +4,7 @@ import type { Customer, Company } from "../store/auth";
 import { apiFetch } from "../api/client";
 import { Navbar } from "../components/Navbar";
 import DefaultPFP from "../assets/defaultpfp.jpg"
+import { CompanyFileUploader } from "../components/CompanyFileUploader";
 
 export default function ProfileEdit() {
 	const { role, customer, company, setCompany, setCustomer } = useAuthStore();
@@ -184,6 +185,12 @@ export default function ProfileEdit() {
 							</>
 						)}
 					</div>
+
+					{role === "company" && company && (
+						<div className="mt-6 border-t pt-4">
+							<CompanyFileUploader companyId={company.id} />
+						</div>
+					)}
 				</div>
 			</div>
 		</div>
