@@ -164,3 +164,32 @@ func DatabaseSectorsToSectors(dbSectors []database.Sector) []Sector {
 	}
 	return sectors
 }
+
+type CompanyFile struct {
+	ID         uuid.UUID `json:"id"`
+	CompanyID  uuid.UUID `json:"company_id"`
+	Category   string    `json:"category"`
+	FileName   string    `json:"file_name"`
+	Url        string    `json:"url"`
+	UploadedAt time.Time `json:"uploaded_at"`
+}
+
+func DatabaseCompanyFileToCompanyFile(dbCompanyFile database.CompanyFile) CompanyFile {
+	return CompanyFile{
+		ID:         dbCompanyFile.ID,
+		CompanyID:  dbCompanyFile.CompanyID,
+		Category:   dbCompanyFile.Category,
+		FileName:   dbCompanyFile.FileName,
+		Url:        dbCompanyFile.Url,
+		UploadedAt: dbCompanyFile.UploadedAt,
+	}
+}
+
+func DatabaseCompanyFilesToCompanyFiles(dbCompanyFiles []database.CompanyFile) []CompanyFile {
+	companyFiles := []CompanyFile{}
+	for _, dbCompanyFile := range dbCompanyFiles {
+		companyFiles = append(companyFiles, DatabaseCompanyFileToCompanyFile(dbCompanyFile))
+	}
+	return companyFiles
+}
+
