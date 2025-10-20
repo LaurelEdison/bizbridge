@@ -16,35 +16,6 @@ import (
 	"github.com/google/uuid"
 )
 
-func GetMe(h *handlers.Handlers) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		claims, ok := auth.GetClaims(r.Context())
-		if !ok {
-			apiutils.RespondWithError(h.ZapLogger, w, http.StatusUnauthorized, "Invalid claims")
-			return
-		}
-		role := claims["role"].(string)
-		idstr := claims["id"].(string)
-		id, err := uuid.Parse(idstr)
-		if err != nil {
-			apiutils.RespondWithError(h.ZapLogger, w, http.StatusBadRequest, "Invalid id")
-			return
-		}
-
-		if role != "customer" {
-			apiutils.RespondWithError(h.ZapLogger, w, http.StatusBadRequest, "Unexpected role")
-			return
-		}
-
-		customer, err := h.DB.GetCustomerByID(r.Context(), id)
-		if err != nil {
-			apiutils.RespondWithError(h.ZapLogger, w, http.StatusBadRequest, "Could not find customer")
-			return
-		}
-		apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, handlers.DatabaseCustomerToCustomer(customer))
-	}
-}
-
 func CreateCustomer(h *handlers.Handlers) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		type Parameters struct {
@@ -81,6 +52,35 @@ func CreateCustomer(h *handlers.Handlers) http.HandlerFunc {
 		})
 		if err != nil {
 			apiutils.RespondWithError(h.ZapLogger, w, http.StatusInternalServerError, "Could not create customer")
+			return
+		}
+		apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, handlers.DatabaseCustomerToCustomer(customer))
+	}
+}
+
+func GetMe(h *handlers.Handlers) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		claims, ok := auth.GetClaims(r.Context())
+		if !ok {
+			apiutils.RespondWithError(h.ZapLogger, w, http.StatusUnauthorized, "Invalid claims")
+			return
+		}
+		role := claims["role"].(string)
+		idstr := claims["id"].(string)
+		id, err := uuid.Parse(idstr)
+		if err != nil {
+			apiutils.RespondWithError(h.ZapLogger, w, http.StatusBadRequest, "Invalid id")
+			return
+		}
+
+		if role != "customer" {
+			apiutils.RespondWithError(h.ZapLogger, w, http.StatusBadRequest, "Unexpected role")
+			return
+		}
+
+		customer, err := h.DB.GetCustomerByID(r.Context(), id)
+		if err != nil {
+			apiutils.RespondWithError(h.ZapLogger, w, http.StatusBadRequest, "Could not find customer")
 			return
 		}
 		apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, handlers.DatabaseCustomerToCustomer(customer))
