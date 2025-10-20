@@ -4,6 +4,7 @@ import { SectorSelector } from "../components/SectorSelector";
 import { useAuthStore, type Company } from "../store/auth";
 import { createChatRoom } from "../api/chat";
 import { Navbar } from "../components/Navbar";
+import { CompanyFileGallery } from "../components/CompanyFileGallery";
 
 
 export function SearchPage() {
@@ -70,6 +71,9 @@ export function SearchPage() {
 							<h2 className="text-lg font-bold">{company.name}</h2>
 							<p className="text-gray-600 text-sm">{company.address}</p>
 							<p className="text-gray-500 text-sm">{company.email}</p>
+
+							<CompanyFileGallery companyId={company.id} />
+
 							{customer && (
 								<button
 									onClick={async () => {
