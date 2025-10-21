@@ -1,24 +1,14 @@
 import type { fileResponse, CompanyFile, CustomerFile } from "../store/fileStore";
-import { useAuthStore } from "../store/auth";
 import { apiFetch } from "./client";
 
 export async function uploadCompanyFiles(files: File[]): Promise<fileResponse[]> {
 	const formData = new FormData();
 	files.forEach(file => formData.append("files", file));
 
-	const token = useAuthStore.getState().token;
-
-	const res = await fetch("http://localhost:8080/bizbridge/company/upload", {
+	return apiFetch<fileResponse[]>("/bizbridge/company/upload", {
 		method: "POST",
-		headers: token ? { Authorization: `Bearer ${token}` } : {},
 		body: formData,
 	});
-
-	if (!res.ok) {
-		const text = await res.text();
-		throw new Error(`Upload failed ${res.status}: ${text}`);
-	}
-	return await res.json();
 }
 
 export async function getCompanyFiles(company_id: string): Promise<CompanyFile[]> {
