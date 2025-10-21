@@ -11,6 +11,7 @@ export function CompanyFileGallery({ companyId }: { companyId: string }) {
 			try {
 				setLoading(true);
 				const data = await getCompanyFiles(companyId)
+				console.log("Company files:", JSON.stringify(data, null, 2));
 				setFiles(data);
 			} catch (err) {
 				console.error("Failed to fetch files for company:", companyId, err);
@@ -31,13 +32,13 @@ export function CompanyFileGallery({ companyId }: { companyId: string }) {
 					<div key={file.id} className="relative border rounded overflow-hidden">
 						{isPDF ? (
 							<iframe
-								src={`http://localhost:8080/bizbridge${file.url}`}
+								src={`${file.url}`}
 								title={file.file_name}
 								className="w-full h-24"
 							/>
 						) : (
 							<img
-								src={`http://localhost:8080/bizbridge${file.url}`}
+								src={`${file.url}`}
 								alt={file.file_name}
 								className="w-full h-24 object-cover"
 							/>
