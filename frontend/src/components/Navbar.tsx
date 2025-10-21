@@ -1,24 +1,31 @@
 import { useAuthStore } from "../store/auth";
+import logo from "../assets/logoPutih.png"
 
 export function Navbar() {
 	const { token, role, logout } = useAuthStore();
 
 	return (
-		<nav className="w-full flex justify-between items-center px-8 py-4 bg-white shadow-md sticky top-0 z-50">
-			<h1 className="text-2xl font-bold text-blue-600 tracking-tight">BizBridge</h1>
+		<nav className="w-full flex justify-between items-center px-8 py-4 bg-[#094233] shadow-md sticky top-0 z-50">
+			<a href="/" className="flex items-center gap-3">
+				<img
+					src={logo}
+					alt="BizBridge Logo"
+					className="h-12 w-auto object-contain"
+				/>
 
-			<div className="flex items-center gap-4">
+			</a>
+			<div className="flex items-center gap-6 text-white text-lg font-medium">
 				{!token ? (
 					<>
 						<a
 							href="/login"
-							className="px-4 py-2 text-blue-600 font-medium hover:text-blue-800 transition"
+							className="hover:text-[rgba(252,204,98,1)] transition"
 						>
 							Login
 						</a>
 						<a
 							href="/register"
-							className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+							className="px-4 py-2 bg-[rgba(252,204,98,1)] text-[#094233] rounded-full font-semibold hover:bg-yellow-300 transition"
 						>
 							Sign Up
 						</a>
@@ -27,19 +34,19 @@ export function Navbar() {
 					<>
 						<a
 							href="/chat"
-							className="px-4 py-2 text-blue-600 font-medium hover:text-blue-800 transition"
+							className="hover:text-[rgba(252,204,98,1)] transition"
 						>
 							Chat
 						</a>
 						<a
 							href="/search"
-							className="px-4 py-2 text-blue-600 font-medium hover:text-blue-800 transition"
+							className="hover:text-[rgba(252,204,98,1)] transition"
 						>
 							Search
 						</a>
 						<a
 							href="/profile"
-							className="px-4 py-2 text-blue-600 font-medium hover:text-blue-800 transition"
+							className="hover:text-[rgba(252,204,98,1)] transition"
 						>
 							Profile
 						</a>
@@ -48,7 +55,7 @@ export function Navbar() {
 								logout();
 								window.location.href = "/";
 							}}
-							className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition"
+							className="px-4 py-2 bg-white text-[#094233] rounded-full font-semibold hover:bg-gray-200 transition"
 						>
 							Logout
 						</button>
@@ -57,13 +64,13 @@ export function Navbar() {
 					<>
 						<a
 							href="/chat"
-							className="px-4 py-2 text-blue-600 font-medium hover:text-blue-800 transition"
+							className="hover:text-[rgba(252,204,98,1)] transition"
 						>
 							Chat
 						</a>
 						<a
 							href="/profile"
-							className="px-4 py-2 text-blue-600 font-medium hover:text-blue-800 transition"
+							className="hover:text-[rgba(252,204,98,1)] transition"
 						>
 							Profile
 						</a>
@@ -72,7 +79,7 @@ export function Navbar() {
 								logout();
 								window.location.href = "/";
 							}}
-							className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition"
+							className="px-4 py-2 bg-white text-[#094233] rounded-full font-semibold hover:bg-gray-200 transition"
 						>
 							Logout
 						</button>
