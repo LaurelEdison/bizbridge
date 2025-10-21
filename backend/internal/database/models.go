@@ -34,6 +34,15 @@ type Company struct {
 	UpdatedAt    time.Time
 }
 
+type CompanyFile struct {
+	ID         uuid.UUID
+	CompanyID  uuid.UUID
+	Category   string
+	FileName   string
+	Url        string
+	UploadedAt time.Time
+}
+
 type Customer struct {
 	ID           uuid.UUID
 	Name         string
@@ -44,6 +53,15 @@ type Customer struct {
 	Photourl     sql.NullString
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
+}
+
+type CustomerFile struct {
+	ID         uuid.UUID
+	CustomerID uuid.UUID
+	Category   string
+	FileName   string
+	Url        string
+	UploadedAt time.Time
 }
 
 type Message struct {
