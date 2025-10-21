@@ -3,15 +3,15 @@ import { useAuthStore } from "../store/auth";
 import type { Customer, Company } from "../store/auth";
 import { apiFetch } from "../api/client";
 import { Navbar } from "../components/Navbar";
-import DefaultPFP from "../assets/defaultpfp.jpg"
+import DefaultPFP from "../assets/defaultpfp.jpg";
 import { CompanyFileUploader } from "../components/CompanyFileUploader";
 import { ProfilePictureUploader } from "../components/ProfilePictureUploader";
 
 export default function ProfileEdit() {
 	const { role, customer, company, setCompany, setCustomer } = useAuthStore();
 	const [loading, setLoading] = useState(true);
-	const [editing, setEditing] = useState(false)
-	const [formData, setFormData] = useState<Partial<Customer & Company>>({})
+	const [editing, setEditing] = useState(false);
+	const [formData, setFormData] = useState<Partial<Customer & Company>>({});
 	const profileSrc =
 		role === "customer"
 			? customer?.photourl
@@ -25,28 +25,18 @@ export default function ProfileEdit() {
 		async function loadProfile() {
 			try {
 				if (role === "customer" && !customer) {
-					const customer = await apiFetch<Customer>("/bizbridge/customer/me")
+					const customer = await apiFetch<Customer>("/bizbridge/customer/me");
 					setCustomer(customer);
 					setFormData(customer);
-				}
-				else if (role === "company" && !company) {
+				} else if (role === "company" && !company) {
 					const company = await apiFetch<Company>("/bizbridge/company/me");
 					setCompany(company);
 					setFormData(company);
+				} else {
+					if (role === "customer" && customer) setFormData(customer);
+					else if (role === "company" && company) setFormData(company);
+					else setFormData({});
 				}
-				else {
-					if (role === "customer" && customer) {
-						setFormData(customer)
-					}
-					else if (role === "company" && company) {
-						setFormData(company)
-					}
-					else {
-						setFormData({})
-					}
-
-				}
-
 			} catch (err) {
 				console.error("Failed to get profile", err);
 			} finally {
@@ -57,8 +47,9 @@ export default function ProfileEdit() {
 	}, [role, customer, company, setCustomer, setCompany]);
 
 	function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
-		setFormData({ ...formData, [e.target.name]: e.target.value })
+		setFormData({ ...formData, [e.target.name]: e.target.value });
 	}
+
 	async function handleSave() {
 		try {
 			if (role === "customer") {
@@ -67,35 +58,36 @@ export default function ProfileEdit() {
 					body: JSON.stringify(formData),
 				});
 				setCustomer(updated);
-			}
-			else if (role === "company") {
+			} else if (role === "company") {
 				const updated = await apiFetch<Company>("/bizbridge/company/update", {
 					method: "PATCH",
-					body: JSON.stringify(formData)
-				})
-				setCompany(updated)
+					body: JSON.stringify(formData),
+				});
+				setCompany(updated);
 			}
-			setEditing(false)
+			setEditing(false);
 		} catch (err) {
 			console.error("Failed to update profile", err);
 		}
 	}
 
-	if (loading) return <p>Loading...</p>
+	if (loading) return <p className="text-gray-500 text-center mt-10">Loading profile...</p>;
 
 	return (
-		<div className="flex flex-col h-screen w-full overflow-hidden">
+		<div className="flex flex-col h-screen w-full overflow-hidden font-[Inria_Serif] bg-[#f9fafb] text-[#2d3748]">
 			<Navbar />
 
-			<div className="flex-1 overflow-auto p-6 bg-gray-50">
-				<div className="max-w-2xl mx-auto bg-white shadow rounded-lg p-6 flex flex-col gap-4">
-					<div className="flex items-center gap-4">
-						<h1 className="text-2xl font-bold">
+			<div className="flex-1 overflow-auto p-6">
+				<div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-md border border-gray-100 p-8">
+					{/* Header */}
+					<div className="flex items-center gap-4 mb-6 border-b border-gray-100 pb-4">
+						<h1 className="text-3xl font-bold text-[#094233]">
 							{role === "customer" ? "Customer Profile" : "Company Profile"}
 						</h1>
 					</div>
 
-					<div className="flex items-center gap-4">
+					{/* Profile Picture */}
+					<div className="flex flex-col items-center gap-3 mb-6">
 						<ProfilePictureUploader
 							currentPhoto={profileSrc}
 							role={role}
@@ -107,12 +99,17 @@ export default function ProfileEdit() {
 								}
 							}}
 						/>
+						<p className="text-gray-500 text-sm">Click the photo to update</p>
 					</div>
 
-					<p className="text-gray-600">Email: {role === "customer" ? customer?.email : company?.email}</p>
+					{/* Email */}
+					<p className="text-gray-700 font-medium mb-4">
+						<span className="text-gray-500 font-normal">Email:</span>{" "}
+						{role === "customer" ? customer?.email : company?.email}
+					</p>
 
-					{/* Form fields */}
-					<div className="flex flex-col gap-3">
+					{/* Editable Form Fields */}
+					<div className="flex flex-col gap-4">
 						{role === "customer" ? (
 							<>
 								<input
@@ -121,7 +118,10 @@ export default function ProfileEdit() {
 									onChange={handleChange}
 									disabled={!editing}
 									placeholder="Name"
-									className="border rounded p-2 w-full"
+									className={`border rounded-lg p-2.5 w-full transition ${editing
+										? "border-[#cce3d9] focus:ring-2 focus:ring-[#276749]"
+										: "bg-gray-50 border-gray-200 text-gray-500"
+										}`}
 								/>
 								<input
 									name="description"
@@ -129,7 +129,10 @@ export default function ProfileEdit() {
 									onChange={handleChange}
 									disabled={!editing}
 									placeholder="Description"
-									className="border rounded p-2 w-full"
+									className={`border rounded-lg p-2.5 w-full transition ${editing
+										? "border-[#cce3d9] focus:ring-2 focus:ring-[#276749]"
+										: "bg-gray-50 border-gray-200 text-gray-500"
+										}`}
 								/>
 								<input
 									name="country"
@@ -137,7 +140,10 @@ export default function ProfileEdit() {
 									onChange={handleChange}
 									disabled={!editing}
 									placeholder="Country"
-									className="border rounded p-2 w-full"
+									className={`border rounded-lg p-2.5 w-full transition ${editing
+										? "border-[#cce3d9] focus:ring-2 focus:ring-[#276749]"
+										: "bg-gray-50 border-gray-200 text-gray-500"
+										}`}
 								/>
 							</>
 						) : (
@@ -148,7 +154,10 @@ export default function ProfileEdit() {
 									onChange={handleChange}
 									disabled={!editing}
 									placeholder="Name"
-									className="border rounded p-2 w-full"
+									className={`border rounded-lg p-2.5 w-full transition ${editing
+										? "border-[#cce3d9] focus:ring-2 focus:ring-[#276749]"
+										: "bg-gray-50 border-gray-200 text-gray-500"
+										}`}
 								/>
 								<input
 									name="description"
@@ -156,7 +165,10 @@ export default function ProfileEdit() {
 									onChange={handleChange}
 									disabled={!editing}
 									placeholder="Description"
-									className="border rounded p-2 w-full"
+									className={`border rounded-lg p-2.5 w-full transition ${editing
+										? "border-[#cce3d9] focus:ring-2 focus:ring-[#276749]"
+										: "bg-gray-50 border-gray-200 text-gray-500"
+										}`}
 								/>
 								<input
 									name="address"
@@ -164,7 +176,10 @@ export default function ProfileEdit() {
 									onChange={handleChange}
 									disabled={!editing}
 									placeholder="Address"
-									className="border rounded p-2 w-full"
+									className={`border rounded-lg p-2.5 w-full transition ${editing
+										? "border-[#cce3d9] focus:ring-2 focus:ring-[#276749]"
+										: "bg-gray-50 border-gray-200 text-gray-500"
+										}`}
 								/>
 								<input
 									name="username"
@@ -172,18 +187,21 @@ export default function ProfileEdit() {
 									onChange={handleChange}
 									disabled={!editing}
 									placeholder="Username"
-									className="border rounded p-2 w-full"
+									className={`border rounded-lg p-2.5 w-full transition ${editing
+										? "border-[#cce3d9] focus:ring-2 focus:ring-[#276749]"
+										: "bg-gray-50 border-gray-200 text-gray-500"
+										}`}
 								/>
 							</>
 						)}
 					</div>
 
-					{/* Action buttons */}
-					<div className="flex gap-3 mt-4">
+					{/* Action Buttons */}
+					<div className="flex gap-3 mt-6">
 						{!editing ? (
 							<button
 								onClick={() => setEditing(true)}
-								className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+								className="px-5 py-2.5 bg-[#094233] text-white rounded-lg hover:bg-[#276749] transition shadow-sm"
 							>
 								Edit
 							</button>
@@ -191,13 +209,13 @@ export default function ProfileEdit() {
 							<>
 								<button
 									onClick={handleSave}
-									className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition"
+									className="px-5 py-2.5 bg-[#2f855a] text-white rounded-lg hover:bg-[#276749] transition shadow-sm"
 								>
 									Save
 								</button>
 								<button
 									onClick={() => setEditing(false)}
-									className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition"
+									className="px-5 py-2.5 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition shadow-sm"
 								>
 									Cancel
 								</button>
@@ -205,13 +223,17 @@ export default function ProfileEdit() {
 						)}
 					</div>
 
+					{/* Company file section */}
 					{role === "company" && company && (
-						<div className="mt-6 border-t pt-4">
+						<div className="mt-8 border-t border-gray-100 pt-6">
+							<h2 className="text-lg font-semibold text-[#094233] mb-3">
+								Company Files
+							</h2>
 							<CompanyFileUploader companyId={company.id} />
 						</div>
 					)}
 				</div>
 			</div>
 		</div>
-	)
+	);
 }
