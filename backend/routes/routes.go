@@ -41,8 +41,10 @@ func SetupRoutes(h *handlers.Handlers, router chi.Router) {
 		router.Get("/customer/me", customer.GetMe(h))
 		router.Patch("/customer/update", customer.UpdateCustomerDetails(h))
 		router.Post("/customer/upload", customer.FileUpload(h))
+		router.Post("/customer/upload-photo", customer.UpdateCompanyProfilePicture(h))
 
 		router.Post("/company/upload", company.FileUpload(h))
+		router.Post("/company/upload-photo", company.UpdateCompanyProfilePicture(h))
 		router.Get("/company/me", company.GetMe(h))
 		router.Patch("/company/update", company.UpdateCompanyDetails(h))
 		router.Post("/company/sector", sector.AddSectorLink(h))
