@@ -5,13 +5,22 @@ import { apiFetch } from "../api/client";
 import { Navbar } from "../components/Navbar";
 import DefaultPFP from "../assets/defaultpfp.jpg"
 import { CompanyFileUploader } from "../components/CompanyFileUploader";
+import { ProfilePictureUploader } from "../components/ProfilePictureUploader";
 
 export default function ProfileEdit() {
 	const { role, customer, company, setCompany, setCustomer } = useAuthStore();
 	const [loading, setLoading] = useState(true);
 	const [editing, setEditing] = useState(false)
 	const [formData, setFormData] = useState<Partial<Customer & Company>>({})
-	const profileSrc = role === "customer" ? customer?.photourl || DefaultPFP : company?.photourl || DefaultPFP
+	const profileSrc =
+		role === "customer"
+			? customer?.photourl
+				? `http://localhost:8080/bizbridge${customer.photourl}`
+				: DefaultPFP
+			: company?.photourl
+				? `http://localhost:8080/bizbridge${company.photourl}`
+				: DefaultPFP;
+
 	useEffect(() => {
 		async function loadProfile() {
 			try {
@@ -81,13 +90,23 @@ export default function ProfileEdit() {
 			<div className="flex-1 overflow-auto p-6 bg-gray-50">
 				<div className="max-w-2xl mx-auto bg-white shadow rounded-lg p-6 flex flex-col gap-4">
 					<div className="flex items-center gap-4">
-						<img
-							src={profileSrc}
-							className="w-24 h-24 rounded-full object-cover"
-						/>
 						<h1 className="text-2xl font-bold">
 							{role === "customer" ? "Customer Profile" : "Company Profile"}
 						</h1>
+					</div>
+
+					<div className="flex items-center gap-4">
+						<ProfilePictureUploader
+							currentPhoto={profileSrc}
+							role={role}
+							onUploaded={(url) => {
+								if (role === "customer") {
+									setCustomer({ ...customer!, photourl: url });
+								} else {
+									setCompany({ ...company!, photourl: url });
+								}
+							}}
+						/>
 					</div>
 
 					<p className="text-gray-600">Email: {role === "customer" ? customer?.email : company?.email}</p>
