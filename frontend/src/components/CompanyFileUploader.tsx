@@ -70,13 +70,13 @@ export function CompanyFileUploader({ companyId }: { companyId: string }) {
 							>
 								{isPDF ? (
 									<iframe
-										src={`http://localhost:8080/bizbridge${file.url}`}
+										src={`${file.url}`}
 										title={file.file_name}
 										className="w-full h-32"
 									/>
 								) : (
 									<img
-										src={`http://localhost:8080/bizbridge${file.url}`}
+										src={`${file.url}`}
 										alt={file.file_name}
 										className="w-full h-32 object-cover"
 									/>
