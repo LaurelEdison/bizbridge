@@ -15,10 +15,10 @@ export default function ProfileEdit() {
 	const profileSrc =
 		role === "customer"
 			? customer?.photourl
-				? `http://localhost:8080/bizbridge${customer.photourl}`
+				? `${customer.photourl}`
 				: DefaultPFP
 			: company?.photourl
-				? `http://localhost:8080/bizbridge${company.photourl}`
+				? `${company.photourl}`
 				: DefaultPFP;
 
 	useEffect(() => {
