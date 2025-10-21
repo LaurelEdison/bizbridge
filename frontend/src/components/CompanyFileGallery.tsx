@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { CompanyFile } from "../store/fileStore";
 import { getCompanyFiles } from "../api/file";
+import { FileText, Image as ImageIcon } from "lucide-react";
 
 export function CompanyFileGallery({ companyId }: { companyId: string }) {
 	const [files, setFiles] = useState<CompanyFile[]>([]);
@@ -10,7 +11,7 @@ export function CompanyFileGallery({ companyId }: { companyId: string }) {
 		(async () => {
 			try {
 				setLoading(true);
-				const data = await getCompanyFiles(companyId)
+				const data = await getCompanyFiles(companyId);
 				console.log("Company files:", JSON.stringify(data, null, 2));
 				setFiles(data);
 			} catch (err) {
@@ -25,24 +26,40 @@ export function CompanyFileGallery({ companyId }: { companyId: string }) {
 	if (!files.length) return null;
 
 	return (
-		<div className="grid grid-cols-3 gap-2 mt-2">
+		<div className="grid grid-cols-3 gap-3 mt-2">
 			{files.slice(0, 3).map((file) => {
 				const isPDF = file.file_name.toLowerCase().endsWith(".pdf");
+				const fileUrl = file.url.startsWith("/uploads/")
+					? `${import.meta.env.VITE_API_URL || ""}${file.url}`
+					: file.url;
+
 				return (
-					<div key={file.id} className="relative border rounded overflow-hidden">
-						{isPDF ? (
-							<iframe
-								src={`${file.url}`}
-								title={file.file_name}
-								className="w-full h-24"
-							/>
-						) : (
-							<img
-								src={`${file.url}`}
-								alt={file.file_name}
-								className="w-full h-24 object-cover"
-							/>
-						)}
+					<div
+						key={file.id}
+						className="relative group rounded-xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300"
+					>
+						{/* Thumbnail */}
+						<div className="aspect-[4/3] bg-gray-50 flex items-center justify-center">
+							{isPDF ? (
+								<div className="flex flex-col items-center justify-center text-gray-500">
+									<FileText size={36} className="mb-1 text-[#2d3748]" />
+									<span className="text-[11px] font-medium">PDF File</span>
+								</div>
+							) : (
+								<img
+									src={fileUrl}
+									alt={file.file_name}
+									className="w-full h-full object-cover"
+								/>
+							)}
+						</div>
+
+						{/* Overlay */}
+						<div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300 flex items-end justify-center">
+							<p className="text-white text-xs mb-2 opacity-0 group-hover:opacity-100 transition">
+								{file.file_name}
+							</p>
+						</div>
 					</div>
 				);
 			})}
