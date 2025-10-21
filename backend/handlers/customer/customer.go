@@ -3,7 +3,9 @@ package customer
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -113,6 +115,59 @@ func GetCustomerByEmail(h *handlers.Handlers) http.HandlerFunc {
 			return
 		}
 		apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, handlers.DatabaseCustomerToCustomer(customer))
+	}
+}
+
+func UpdateCompanyProfilePicture(h *handlers.Handlers) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		claims, ok := auth.GetClaims(r.Context())
+		if !ok {
+			apiutils.RespondWithError(h.ZapLogger, w, http.StatusUnauthorized, "Invalid claims")
+			return
+		}
+		idstr := claims["id"].(string)
+		id, err := uuid.Parse(idstr)
+		if err != nil {
+			apiutils.RespondWithError(h.ZapLogger, w, http.StatusBadRequest, "Invalid id")
+			return
+		}
+		r.Body = http.MaxBytesReader(w, r.Body, 20<<20)
+		err = r.ParseMultipartForm(20 << 20)
+		if err != nil {
+			apiutils.RespondWithError(h.ZapLogger, w, http.StatusBadRequest, "File too large or invalid form")
+			return
+		}
+		file := r.MultipartForm.File["file"]
+		if len(file) == 0 {
+			apiutils.RespondWithError(h.ZapLogger, w, http.StatusBadRequest, "No files uploaded")
+			return
+		}
+		if err := os.MkdirAll("uploads", os.ModePerm); err != nil {
+			apiutils.RespondWithError(h.ZapLogger, w, http.StatusInternalServerError, "Could not create file directory")
+			return
+		}
+		src, err := file[0].Open()
+		if err != nil {
+			apiutils.RespondWithError(h.ZapLogger, w, http.StatusInternalServerError, "failed to open file")
+			return
+		}
+		fileName, err := apiutils.SaveUploadedFile(src, file[0].Filename, "uploads")
+		if err != nil {
+			apiutils.RespondWithError(h.ZapLogger, w, http.StatusInternalServerError, "failed to open file")
+			return
+		}
+		fileURL := fmt.Sprintf("/uploads/%s", fileName)
+		err = h.DB.UpdateCustomerPhotoUrl(r.Context(), database.UpdateCustomerPhotoUrlParams{
+			ID:        id,
+			Photourl:  sql.NullString{String: fileURL, Valid: true},
+			UpdatedAt: time.Now(),
+		})
+
+		if err != nil {
+			apiutils.RespondWithError(h.ZapLogger, w, http.StatusInternalServerError, "Could not update company photo url to databse")
+			return
+		}
+		apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, map[string]string{"photo_url": fileURL})
 	}
 }
 
