@@ -95,14 +95,30 @@ func GetUserChatRooms(h *handlers.Handlers) http.HandlerFunc {
 			apiutils.RespondWithError(h.ZapLogger, w, http.StatusBadRequest, "Invalid id")
 			return
 		}
-
-		chatRooms, err := h.DB.GetUserChatRooms(r.Context(), id)
+		chatRooms := []handlers.ChatRoom{}
+		dbChatRooms, err := h.DB.GetUserChatRooms(r.Context(), id)
 		if err != nil {
 			apiutils.RespondWithError(h.ZapLogger, w, http.StatusInternalServerError, "Failed to get chat rooms")
 			return
 		}
 
-		apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, handlers.DatabaseChatRoomsToChatRooms(chatRooms))
+		for _, dbChatroom := range dbChatRooms {
+			customer, _ := h.DB.GetCustomerByID(r.Context(), dbChatroom.CustomerID)
+			company, _ := h.DB.GetCompanyByID(r.Context(), dbChatroom.CompanyID)
+			chatRooms = append(chatRooms, handlers.ChatRoom{
+				ID:               dbChatroom.ID,
+				CustomerID:       customer.ID,
+				CompanyID:        company.ID,
+				CustomerName:     dbChatroom.CustomerName,
+				CompanyName:      dbChatroom.CompanyName,
+				CompanyPhotoUrl:  &company.Photourl.String,
+				CustomerPhotoUrl: &customer.Photourl.String,
+				CreatedAt:        dbChatroom.CreatedAt,
+				UpdatedAt:        dbChatroom.UpdatedAt,
+			})
+		}
+
+		apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, chatRooms)
 
 	}
 }
