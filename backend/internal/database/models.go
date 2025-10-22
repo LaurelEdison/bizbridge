@@ -34,6 +34,14 @@ type Company struct {
 	UpdatedAt    time.Time
 }
 
+type CompanyBanner struct {
+	ID         uuid.UUID
+	CompanyID  uuid.UUID
+	FileName   string
+	Url        string
+	UploadedAt time.Time
+}
+
 type CompanyFile struct {
 	ID         uuid.UUID
 	CompanyID  uuid.UUID

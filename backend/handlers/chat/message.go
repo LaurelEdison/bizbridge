@@ -114,19 +114,21 @@ func GetMessages(h *handlers.Handlers) http.HandlerFunc {
 			case "customer":
 				customer, _ := h.DB.GetCustomerByID(r.Context(), DBMessage.SenderID)
 				sender = handlers.User{
-					ID:    customer.ID,
-					Name:  customer.Name,
-					Email: customer.Email,
-					Role:  "customer",
+					ID:       customer.ID,
+					Name:     customer.Name,
+					Email:    customer.Email,
+					Role:     "customer",
+					PhotoUrl: &customer.Photourl.String,
 				}
 
 			case "company":
 				company, _ := h.DB.GetCompanyByID(r.Context(), DBMessage.SenderID)
 				sender = handlers.User{
-					ID:    company.ID,
-					Name:  company.Name,
-					Email: company.Email,
-					Role:  "customer",
+					ID:       company.ID,
+					Name:     company.Name,
+					Email:    company.Email,
+					Role:     "customer",
+					PhotoUrl: &company.Photourl.String,
 				}
 			}
 			msg.Sender = sender

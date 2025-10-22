@@ -30,6 +30,7 @@ func SetupRoutes(h *handlers.Handlers, router chi.Router) {
 	router.Post("/company", company.CreateCompany(h))
 	router.Post("/company/login", company.Login(h))
 	router.Get("/company/files", company.GetFilesByCompanyID(h))
+	router.Get("/company/banners", company.GetCompanyBanners(h))
 
 	router.Get("/social/{chat_room_id}", func(w http.ResponseWriter, r *http.Request) {
 		ws.ServeWS(h.Hub, h.ZapLogger, w, r)
@@ -45,6 +46,7 @@ func SetupRoutes(h *handlers.Handlers, router chi.Router) {
 
 		router.Post("/company/upload", company.FileUpload(h))
 		router.Post("/company/upload-photo", company.UpdateCompanyProfilePicture(h))
+		router.Post("/company/upload-banner", company.UploadCompanyBanners(h))
 		router.Get("/company/me", company.GetMe(h))
 		router.Patch("/company/update", company.UpdateCompanyDetails(h))
 		router.Post("/company/sector", sector.AddSectorLink(h))

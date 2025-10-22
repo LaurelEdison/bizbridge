@@ -6,6 +6,7 @@ import { Navbar } from "../components/Navbar";
 import DefaultPFP from "../assets/defaultpfp.jpg";
 import { CompanyFileUploader } from "../components/CompanyFileUploader";
 import { ProfilePictureUploader } from "../components/ProfilePictureUploader";
+import { BannerUploader } from "../components/BannerUploader";
 
 export default function ProfileEdit() {
 	const { role, customer, company, setCompany, setCustomer } = useAuthStore();
@@ -225,11 +226,19 @@ export default function ProfileEdit() {
 
 					{/* Company file section */}
 					{role === "company" && company && (
-						<div className="mt-8 border-t border-gray-100 pt-6">
-							<h2 className="text-lg font-semibold text-[#094233] mb-3">
-								Company Files
-							</h2>
-							<CompanyFileUploader companyId={company.id} />
+						<div className="mt-8 border-t border-gray-100 pt-6 space-y-8">
+							<div>
+								<h2 className="text-lg font-semibold text-[#094233] mb-3">
+									Company Files
+								</h2>
+								<CompanyFileUploader companyId={company.id} />
+							</div>
+							<div className="border-t border-gray-100 pt-6">
+								<h2 className="text-lg font-semibold text-[#094233] mb-3">
+									Company Banners
+								</h2>
+								<BannerUploader companyId={company.id} />
+							</div>
 						</div>
 					)}
 				</div>
