@@ -58,13 +58,15 @@ func DatabaseCompaniesToCompanies(dbCompanies []database.Company) []Company {
 }
 
 type ChatRoom struct {
-	ID           uuid.UUID `json:"id"`
-	CustomerID   uuid.UUID `json:"customer_id"`
-	CustomerName string    `json:"customer_name"`
-	CompanyID    uuid.UUID `json:"company_id"`
-	CompanyName  string    `json:"company_name"`
-	CreatedAt    time.Time `json:"created_at"`
-	UpdatedAt    time.Time `json:"updated_at"`
+	ID               uuid.UUID `json:"id"`
+	CustomerID       uuid.UUID `json:"customer_id"`
+	CustomerName     string    `json:"customer_name"`
+	CompanyID        uuid.UUID `json:"company_id"`
+	CompanyName      string    `json:"company_name"`
+	CompanyPhotoUrl  *string   `json:"company_photourl,omitempty"`
+	CustomerPhotoUrl *string   `json:"customer_photourl,omitempty"`
+	CreatedAt        time.Time `json:"created_at"`
+	UpdatedAt        time.Time `json:"updated_at"`
 }
 
 func DatabaseChatRoomToChatRoom(dbChatRoom database.ChatRoom) ChatRoom {
@@ -88,10 +90,11 @@ func DatabaseChatRoomsToChatRooms(dbChatRooms []database.ChatRoom) []ChatRoom {
 }
 
 type User struct {
-	ID    uuid.UUID `json:"id"`
-	Name  string    `json:"name"`
-	Email string    `json:"email"`
-	Role  string    `json:"role"`
+	ID       uuid.UUID `json:"id"`
+	Name     string    `json:"name"`
+	Email    string    `json:"email"`
+	Role     string    `json:"role"`
+	PhotoUrl *string   `json:"photourl,omitempty"`
 }
 
 type Message struct {
@@ -219,4 +222,30 @@ func DatabaseCustomerFilesToCustomerFIles(dbCustomerFiles []database.CustomerFil
 		CustomerFiles = append(CustomerFiles, DatabaseCustomerFileToCustomerFile(dbCustomerFile))
 	}
 	return CustomerFiles
+}
+
+type CompanyBanner struct {
+	ID         uuid.UUID `json:"id"`
+	CompanyID  uuid.UUID `json:"company_id"`
+	FileName   string    `json:"file_name"`
+	Url        string    `json:"url"`
+	UploadedAt time.Time `json:"uploaded_at"`
+}
+
+func DatabaseCompanyBannerToCompanyBanner(dbCompanyBanner database.CompanyBanner) CompanyBanner {
+	return CompanyBanner{
+		ID:         dbCompanyBanner.ID,
+		CompanyID:  dbCompanyBanner.CompanyID,
+		FileName:   dbCompanyBanner.FileName,
+		Url:        dbCompanyBanner.Url,
+		UploadedAt: dbCompanyBanner.UploadedAt,
+	}
+}
+
+func DatabaseCompanyBannersToCompanyBanners(dbCompanyBanners []database.CompanyBanner) []CompanyBanner {
+	companyBanners := []CompanyBanner{}
+	for _, dbCompanybanner := range dbCompanyBanners {
+		companyBanners = append(companyBanners, DatabaseCompanyBannerToCompanyBanner(dbCompanybanner))
+	}
+	return companyBanners
 }
