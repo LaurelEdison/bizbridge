@@ -12,6 +12,39 @@ import (
 	"github.com/google/uuid"
 )
 
+const createCompanyBanner = `-- name: CreateCompanyBanner :one
+INSERT INTO company_banners (id, company_id, file_name, url, uploaded_at) 
+VALUES ( $1, $2, $3, $4, $5)
+RETURNING id, company_id, file_name, url, uploaded_at
+`
+
+type CreateCompanyBannerParams struct {
+	ID         uuid.UUID
+	CompanyID  uuid.UUID
+	FileName   string
+	Url        string
+	UploadedAt time.Time
+}
+
+func (q *Queries) CreateCompanyBanner(ctx context.Context, arg CreateCompanyBannerParams) (CompanyBanner, error) {
+	row := q.db.QueryRowContext(ctx, createCompanyBanner,
+		arg.ID,
+		arg.CompanyID,
+		arg.FileName,
+		arg.Url,
+		arg.UploadedAt,
+	)
+	var i CompanyBanner
+	err := row.Scan(
+		&i.ID,
+		&i.CompanyID,
+		&i.FileName,
+		&i.Url,
+		&i.UploadedAt,
+	)
+	return i, err
+}
+
 const createCompanyFile = `-- name: CreateCompanyFile :one
 INSERT INTO company_files (id, company_id, category, file_name, url, uploaded_at) 
 VALUES ( $1, $2, $3, $4, $5, $6)
@@ -55,6 +88,39 @@ DELETE FROM company_files WHERE id = $1
 func (q *Queries) DeleteCompanyFile(ctx context.Context, id uuid.UUID) error {
 	_, err := q.db.ExecContext(ctx, deleteCompanyFile, id)
 	return err
+}
+
+const getCompanyBannersFromCompanyID = `-- name: GetCompanyBannersFromCompanyID :many
+SELECT id, company_id, file_name, url, uploaded_at FROM company_banners where company_id = $1
+`
+
+func (q *Queries) GetCompanyBannersFromCompanyID(ctx context.Context, companyID uuid.UUID) ([]CompanyBanner, error) {
+	rows, err := q.db.QueryContext(ctx, getCompanyBannersFromCompanyID, companyID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []CompanyBanner
+	for rows.Next() {
+		var i CompanyBanner
+		if err := rows.Scan(
+			&i.ID,
+			&i.CompanyID,
+			&i.FileName,
+			&i.Url,
+			&i.UploadedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const getCompanyFilesFromCompanyID = `-- name: GetCompanyFilesFromCompanyID :many
