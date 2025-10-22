@@ -6,6 +6,7 @@ export type Sender = {
 	name: string;
 	email: string;
 	role: string;
+	photourl?: string;
 }
 
 export type ValidTimeData = {
@@ -30,6 +31,8 @@ export type ChatRoom = {
 	customer_name: string;
 	company_id: string;
 	company_name: string;
+	customer_photourl?: string;
+	company_photourl?: string;
 	updated_at: string;
 	created_at: string;
 	messages: ChatMessage[];
