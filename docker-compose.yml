@@ -65,6 +65,8 @@ services:
       - GOOSE_DBSTRING=host=postgres port=5432 user=postgres password=postgres dbname=bizbridge
     volumes:
       - ./backend/db/schema:/migrations
+    labels:
+      - "traefik.enable=false"
 
 volumes:
   postgres_data:
