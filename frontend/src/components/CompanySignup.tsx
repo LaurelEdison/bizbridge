@@ -17,11 +17,11 @@ export default function CompanySignup() {
 	async function handleCompanySignup(e: React.FormEvent) {
 		e.preventDefault();
 		try {
-			const company = await apiFetch<Company>("/bizbridge/company", {
+			const company = await apiFetch<Company>("/company", {
 				method: "POST",
 				body: JSON.stringify({ name, email, password, address }),
 			});
-			const data = await apiFetch<{ token: string }>("/bizbridge/company/login", {
+			const data = await apiFetch<{ token: string }>("/company/login", {
 				method: "POST",
 				body: JSON.stringify({ email, password }),
 			});
