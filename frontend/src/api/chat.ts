@@ -1,7 +1,7 @@
 import { apiFetch } from "./client";
 import type { ChatMessage, ChatRoom } from "../store/chatStore";
 export async function createChatRoom(recipientID: string) {
-	const res = await apiFetch("/bizbridge/social/chat", {
+	const res = await apiFetch("/social/chat", {
 		method: "POST",
 		body: JSON.stringify({
 			recipient_id: recipientID
@@ -10,14 +10,14 @@ export async function createChatRoom(recipientID: string) {
 	return res;
 }
 export async function getChatRooms(): Promise<ChatRoom[]> {
-	return apiFetch<ChatRoom[]>(`/bizbridge/social/chat`);
+	return apiFetch<ChatRoom[]>(`/social/chat`);
 }
 export async function getMessages(chatRoomID: string): Promise<ChatMessage[]> {
-	return apiFetch(`/bizbridge/social/${chatRoomID}/message`);
+	return apiFetch(`/social/${chatRoomID}/message`);
 }
 
 export async function sendMessage(chatRoomID: string, content: string) {
-	return apiFetch(`/bizbridge/social/${chatRoomID}/message`, {
+	return apiFetch(`/social/${chatRoomID}/message`, {
 		method: "POST",
 		body: JSON.stringify({ content }),
 	});

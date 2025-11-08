@@ -5,7 +5,7 @@ export async function uploadCompanyFiles(files: File[]): Promise<fileResponse[]>
 	const formData = new FormData();
 	files.forEach(file => formData.append("files", file));
 
-	return apiFetch<fileResponse[]>("/bizbridge/company/upload", {
+	return apiFetch<fileResponse[]>("/company/upload", {
 		method: "POST",
 		body: formData,
 	});
@@ -14,10 +14,10 @@ export async function uploadCompanyFiles(files: File[]): Promise<fileResponse[]>
 export async function getCompanyFiles(company_id: string): Promise<CompanyFile[]> {
 	const params = new URLSearchParams();
 	params.append("company_id", company_id)
-	return apiFetch<CompanyFile[]>(`/bizbridge/company/files?${params}`)
+	return apiFetch<CompanyFile[]>(`/company/files?${params}`)
 }
 export async function getCustomerFiles(customer_id: string): Promise<CustomerFile[]> {
 	const params = new URLSearchParams();
 	params.append("customer_id", customer_id)
-	return apiFetch<CustomerFile[]>(`/bizbridge/customer/files?${params}`)
+	return apiFetch<CustomerFile[]>(`/customer/files?${params}`)
 }
