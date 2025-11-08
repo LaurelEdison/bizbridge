@@ -14,7 +14,7 @@ export default function CustomerSignup() {
 	async function handleCustomerSignup(e: React.FormEvent) {
 		e.preventDefault();
 		try {
-			const customer = await apiFetch<Customer>("/customer/", {
+			const customer = await apiFetch<Customer>("/customer", {
 				method: "POST",
 				body: JSON.stringify({ name, email, password, country, description }),
 			});
