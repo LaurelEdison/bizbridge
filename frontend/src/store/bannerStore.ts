@@ -39,7 +39,7 @@ export type BannerState = {
 	deleteBanner: (id: string) => Promise<void>;
 };
 
-export const useBannerStore = create<BannerState>((set, get) => ({
+export const useBannerStore = create<BannerState>((set) => ({
 	banners: [],
 	loading: false,
 	error: null,

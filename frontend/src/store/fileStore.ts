@@ -33,7 +33,7 @@ export type FileState = {
 	clearError: () => void;
 }
 
-export const useFileStore = create<FileState>((set, get) => ({
+export const useFileStore = create<FileState>((set) => ({
 	files: [],
 	loading: false,
 	error: null,
