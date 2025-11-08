@@ -31,10 +31,6 @@ go.work.sum
 .idea/
 .vscode/
 
-# Docker compose
-docker-compose.yml
-
-
 # Created by https://www.toptal.com/developers/gitignore/api/react,node,visualstudiocode
 # Edit at https://www.toptal.com/developers/gitignore?templates=react,node,visualstudiocode
 

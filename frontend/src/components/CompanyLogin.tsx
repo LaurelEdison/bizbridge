@@ -17,7 +17,7 @@ export default function CompanyLogin() {
 		setLoading(true);
 
 		try {
-			const data = await apiFetch<{ token: string }>("/bizbridge/company/login", {
+			const data = await apiFetch<{ token: string }>("/company/login", {
 				method: "POST",
 				body: JSON.stringify({ email, password }),
 			});
@@ -25,7 +25,7 @@ export default function CompanyLogin() {
 
 			useAuthStore.getState().setRole("company");
 
-			const company = await apiFetch<Company>("/bizbridge/company/me");
+			const company = await apiFetch<Company>("/company/me");
 			useAuthStore.getState().setCompany(company);
 
 			window.location.href = "/";

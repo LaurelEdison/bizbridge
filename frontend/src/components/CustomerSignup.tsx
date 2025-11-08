@@ -14,11 +14,11 @@ export default function CustomerSignup() {
 	async function handleCustomerSignup(e: React.FormEvent) {
 		e.preventDefault();
 		try {
-			const customer = await apiFetch<Customer>("bizbridge/customer/", {
+			const customer = await apiFetch<Customer>("/customer/", {
 				method: "POST",
 				body: JSON.stringify({ name, email, password, country, description }),
 			});
-			const data = await apiFetch<{ token: string }>("/bizbridge/customer/login", {
+			const data = await apiFetch<{ token: string }>("/customer/login", {
 				method: "POST",
 				body: JSON.stringify({ email, password }),
 			});

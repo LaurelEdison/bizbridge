@@ -1,0 +1,61 @@
+services:
+  traefik:
+    image: traefik:v3.1
+    command:
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--api.dashboard=true"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik_data:/letsencrypt
+
+  backend:
+    build: ./backend
+    env_file:
+      - ./backend/server/.env
+    environment:
+      PORT: ${PORT}
+      DB_URL: ${DB_URL}
+      JWT_CUSTOMER_SECRET: ${JWT_CUSTOMER_SECRET}
+      JWT_COMPANY_SECRET: ${JWT_COMPANY_SECRET}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.backend.rule=Host(`api.localhost`)"
+      - "traefik.http.routers.backend.entrypoints=web"
+      - "traefik.http.services.backend.loadbalancer.server.port=8080"
+    volumes:
+      - ./backend/server/uploads:/app/uploads
+    depends_on:
+      - postgres
+
+  frontend:
+    build: ./frontend
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.rule=Host(`app.localhost`)"
+      - "traefik.http.routers.frontend.entrypoints=web"
+      - "traefik.http.services.frontend.loadbalancer.server.port=80"
+    depends_on:
+      - backend
+
+  postgres:
+    image: postgres
+    container_name: bizbridge_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: bizbridge
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - /home/earl/bizbridge/db/schema:/docker-entrypoint-initdb.d
+
+volumes:
+  postgres_data:

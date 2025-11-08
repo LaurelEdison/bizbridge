@@ -16,7 +16,7 @@ export default function CustomerLogin() {
 		setError("");
 		setLoading(true);
 		try {
-			const data = await apiFetch<{ token: string }>("/bizbridge/customer/login", {
+			const data = await apiFetch<{ token: string }>("/customer/login", {
 				method: "POST",
 				body: JSON.stringify({ email, password }),
 			});
@@ -24,7 +24,7 @@ export default function CustomerLogin() {
 			setToken(data.token);
 			useAuthStore.getState().setRole("customer");
 
-			const customer = await apiFetch<Customer>("/bizbridge/customer/me");
+			const customer = await apiFetch<Customer>("/customer/me");
 			useAuthStore.getState().setCustomer(customer);
 
 			window.location.href = "/";

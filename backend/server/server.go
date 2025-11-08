@@ -43,7 +43,7 @@ func NewServer(zapLogger *zap.Logger) *http.Server {
 	hub := ws.NewHub()
 	go ws.Run(hub, zapLogger)
 	routes.SetupRoutes(handlers.New(zapLogger, queries, hub), subRouter)
-	router.Mount("/bizbridge", subRouter)
+	router.Mount("/", subRouter)
 
 	return &http.Server{
 		Addr:    ":" + portString,

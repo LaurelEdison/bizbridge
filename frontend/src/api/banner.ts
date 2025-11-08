@@ -7,7 +7,7 @@ export async function uploadCompanyBanners(files: File[]): Promise<fileResponse[
 	const formData = new FormData();
 	files.forEach(file => formData.append("files", file));
 
-	return apiFetch<fileResponse[]>("/bizbridge/company/upload-banner", {
+	return apiFetch<fileResponse[]>("/company/upload-banner", {
 		method: "POST",
 		body: formData,
 	});
@@ -16,10 +16,10 @@ export async function uploadCompanyBanners(files: File[]): Promise<fileResponse[
 export async function getCompanyBanners(company_id: string): Promise<CompanyBanner[]> {
 	const params = new URLSearchParams();
 	params.append("company_id", company_id)
-	return apiFetch<CompanyBanner[]>(`/bizbridge/company/banners?${params}`)
+	return apiFetch<CompanyBanner[]>(`/company/banners?${params}`)
 }
 export async function getCustomerBanners(customer_id: string): Promise<CompanyBanner[]> {
 	const params = new URLSearchParams();
 	params.append("customer_id", customer_id)
-	return apiFetch<CompanyBanner[]>(`/bizbridge/customer/banners?${params}`)
+	return apiFetch<CompanyBanner[]>(`/customer/banners?${params}`)
 }

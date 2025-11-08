@@ -67,7 +67,7 @@ func fileServer(r chi.Router, path string, root http.FileSystem) {
 	if strings.ContainsAny(path, "{}*") {
 		panic("File server does not permit URL parameters")
 	}
-	fs := http.StripPrefix("/bizbridge"+path, http.FileServer(root))
+	fs := http.StripPrefix(path, http.FileServer(root))
 	r.Get(path+"/*", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { fs.ServeHTTP(w, r) }))
 }
 

@@ -1,4 +1,6 @@
 import { useAuthStore } from "../store/auth";
+const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:8080";
+
 export async function uploadProfilePicture(
 	role: "customer" | "company" | null,
 	file: File
@@ -7,7 +9,7 @@ export async function uploadProfilePicture(
 	const formData = new FormData();
 	formData.append("file", file);
 
-	const res = await fetch(`http://localhost:8080/bizbridge/${role}/upload-photo`, {
+	const res = await fetch(`${baseUrl}/${role}/upload-photo`, {
 		method: "POST",
 		headers: token ? { Authorization: `Bearer ${token}` } : {},
 		body: formData,
@@ -21,7 +23,7 @@ export async function uploadProfilePicture(
 	const data = await res.json();
 	let url: string = data.url;
 	if (url.startsWith("/")) {
-		url = `http://localhost:8080/bizbridge${url}`;
+		url = `${baseUrl}${url}`;
 	}
 	return data.url;
 }

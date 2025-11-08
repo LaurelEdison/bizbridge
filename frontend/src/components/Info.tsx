@@ -1,5 +1,4 @@
 import Slider from "react-slick";
-import { Navbar } from "./Navbar";
 import carouselSettings from "../hook/CarouselSetting";
 import "@fontsource/inria-serif"
 import carousel1 from "../assets/carousel1.png"

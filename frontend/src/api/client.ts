@@ -1,4 +1,5 @@
 import { useAuthStore } from "../store/auth";
+const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
 export async function apiFetch<T>(
 	url: string,
@@ -20,7 +21,7 @@ export async function apiFetch<T>(
 	}
 
 
-	const res = await fetch(`http://localhost:8080${url}`, {
+	const res = await fetch(`${baseUrl}${url}`, {
 		...options,
 		headers,
 	});
@@ -51,7 +52,7 @@ function normalizeUrls(obj: any): any {
 		) {
 			console.log("Before normalization:", key, value);
 			if (value.startsWith("/") && !value.startsWith("http")) {
-				newObj[key] = `http://localhost:8080/bizbridge${value}`;
+				newObj[key] = `${baseUrl}${value}`;
 			} else {
 				newObj[key] = value;
 			}

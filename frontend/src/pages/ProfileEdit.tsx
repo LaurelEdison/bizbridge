@@ -26,11 +26,11 @@ export default function ProfileEdit() {
 		async function loadProfile() {
 			try {
 				if (role === "customer" && !customer) {
-					const customer = await apiFetch<Customer>("/bizbridge/customer/me");
+					const customer = await apiFetch<Customer>("/customer/me");
 					setCustomer(customer);
 					setFormData(customer);
 				} else if (role === "company" && !company) {
-					const company = await apiFetch<Company>("/bizbridge/company/me");
+					const company = await apiFetch<Company>("/company/me");
 					setCompany(company);
 					setFormData(company);
 				} else {
@@ -54,13 +54,13 @@ export default function ProfileEdit() {
 	async function handleSave() {
 		try {
 			if (role === "customer") {
-				const updated = await apiFetch<Customer>("/bizbridge/customer/update", {
+				const updated = await apiFetch<Customer>("/customer/update", {
 					method: "PATCH",
 					body: JSON.stringify(formData),
 				});
 				setCustomer(updated);
 			} else if (role === "company") {
-				const updated = await apiFetch<Company>("/bizbridge/company/update", {
+				const updated = await apiFetch<Company>("/company/update", {
 					method: "PATCH",
 					body: JSON.stringify(formData),
 				});
