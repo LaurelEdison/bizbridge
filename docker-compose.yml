@@ -44,7 +44,7 @@ services:
       - backend
 
   postgres:
-    image: postgres
+    image: postgres:18
     container_name: bizbridge_postgres
     restart: always
     environment:
@@ -54,8 +54,17 @@ services:
     ports:
       - "5434:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - /home/earl/bizbridge/db/schema:/docker-entrypoint-initdb.d
+      - postgres_data:/var/lib/postgresql
+
+  migrate:
+    image: ghcr.io/kukymbr/goose-docker:3.26.0
+    depends_on:
+      - postgres
+    environment:
+      - GOOSE_DRIVER=postgres
+      - GOOSE_DBSTRING=host=postgres port=5432 user=postgres password=postgres dbname=bizbridge
+    volumes:
+      - ./backend/db/schema:/migrations
 
 volumes:
   postgres_data:
