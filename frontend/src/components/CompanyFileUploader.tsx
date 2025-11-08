@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { uploadCompanyFiles, getCompanyFiles } from "../api/file";
 import type { CompanyFile } from "../store/fileStore";
-import { FileText, Image as ImageIcon, Upload } from "lucide-react";
+import { FileText, Upload } from "lucide-react";
 
 export function CompanyFileUploader({ companyId }: { companyId: string }) {
 	const [files, setFiles] = useState<CompanyFile[]>([]);
@@ -71,7 +71,12 @@ export function CompanyFileUploader({ companyId }: { companyId: string }) {
 								key={file.id}
 								className="border border-gray-200 rounded-xl bg-gray-50 hover:shadow-md transition overflow-hidden"
 							>
-								<div className="relative w-full h-36 flex items-center justify-center bg-white">
+								<a
+									href={file.url}
+									target="_blank"
+									rel="noopener noreferrer"
+									className="relative w-full h-36 flex items-center justify-center bg-white"
+								>
 									{isPDF ? (
 										<div className="flex flex-col items-center justify-center text-gray-500">
 											<FileText className="w-10 h-10 mb-1" />
@@ -84,7 +89,8 @@ export function CompanyFileUploader({ companyId }: { companyId: string }) {
 											className="w-full h-full object-cover"
 										/>
 									)}
-								</div>
+								</a>
+
 								<div className="p-2 text-xs text-center text-gray-600 truncate">
 									{file.file_name}
 								</div>

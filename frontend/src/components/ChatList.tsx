@@ -40,7 +40,6 @@ export function ChatList({ selectedRoomID, onSelect }: Props) {
 				) : (
 					rooms.map((room) => {
 						const customerID = room.customer_id;
-						const companyID = room.company_id;
 						const isCustomer = myID === customerID;
 
 						const displayName = isCustomer

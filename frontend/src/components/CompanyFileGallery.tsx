@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { CompanyFile } from "../store/fileStore";
 import { getCompanyFiles } from "../api/file";
-import { FileText, Image as ImageIcon } from "lucide-react";
+import { FileText } from "lucide-react";
 
 export function CompanyFileGallery({ companyId }: { companyId: string }) {
 	const [files, setFiles] = useState<CompanyFile[]>([]);
@@ -32,11 +32,11 @@ export function CompanyFileGallery({ companyId }: { companyId: string }) {
 				const fileUrl = file.url.startsWith("/uploads/")
 					? `${import.meta.env.VITE_API_URL || ""}${file.url}`
 					: file.url;
-
 				return (
 					<div
 						key={file.id}
-						className="relative group rounded-xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300"
+						onClick={() => window.open(fileUrl, "_blank")}
+						className="relative group rounded-xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer"
 					>
 						{/* Thumbnail */}
 						<div className="aspect-[4/3] bg-gray-50 flex items-center justify-center">
@@ -55,7 +55,7 @@ export function CompanyFileGallery({ companyId }: { companyId: string }) {
 						</div>
 
 						{/* Overlay */}
-						<div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300 flex items-end justify-center">
+						<div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300 flex items-end justify-center pointer-events-none">
 							<p className="text-white text-xs mb-2 opacity-0 group-hover:opacity-100 transition">
 								{file.file_name}
 							</p>
