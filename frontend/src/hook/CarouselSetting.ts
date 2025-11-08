@@ -1,4 +1,4 @@
-import { Settings } from "react-slick";
+import type { Settings } from "react-slick";
 
 const carouselSettings: Settings = {
 	dots: true,
