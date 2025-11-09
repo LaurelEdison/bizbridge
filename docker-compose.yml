@@ -65,11 +65,13 @@ services:
 
   migrate:
     image: ghcr.io/kukymbr/goose-docker:3.26.0
+    profiles: ["migrate"]
     depends_on:
       - postgres
     environment:
       - GOOSE_DRIVER=postgres
       - GOOSE_DBSTRING=host=postgres port=5432 user=postgres password=postgres dbname=bizbridge
+      - GOOSE_COMMAND=status
     volumes:
       - ./backend/db/schema:/migrations
     labels:
