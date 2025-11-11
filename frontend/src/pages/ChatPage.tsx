@@ -19,7 +19,7 @@ export function ChatPage() {
 				</div>
 				<div className="flex-1 p-4">
 					{selectedRoom ? (
-						<ChatRoom chatRoomID={selectedRoom.id} />
+						<ChatRoom chatRoomID={selectedRoom.id} companyID={selectedRoom.company_id} customerID={selectedRoom.customer_id} />
 					) : (
 						<div className="text-gray-500 flex items-center justify-center h-full">
 							Select a chat to start messaging
