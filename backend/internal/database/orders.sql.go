@@ -127,6 +127,80 @@ func (q *Queries) GetOrderByID(ctx context.Context, id uuid.UUID) (Order, error)
 	return i, err
 }
 
+const getOrdersByCompanyID = `-- name: GetOrdersByCompanyID :many
+SELECT id, customer_id, company_id, escrow_id, total_amount, status, description, created_at, updated_at FROM orders WHERE company_id = $1
+`
+
+func (q *Queries) GetOrdersByCompanyID(ctx context.Context, companyID uuid.UUID) ([]Order, error) {
+	rows, err := q.db.QueryContext(ctx, getOrdersByCompanyID, companyID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Order
+	for rows.Next() {
+		var i Order
+		if err := rows.Scan(
+			&i.ID,
+			&i.CustomerID,
+			&i.CompanyID,
+			&i.EscrowID,
+			&i.TotalAmount,
+			&i.Status,
+			&i.Description,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getOrdersByCustomerID = `-- name: GetOrdersByCustomerID :many
+SELECT id, customer_id, company_id, escrow_id, total_amount, status, description, created_at, updated_at FROM orders WHERE customer_id = $1
+`
+
+func (q *Queries) GetOrdersByCustomerID(ctx context.Context, customerID uuid.UUID) ([]Order, error) {
+	rows, err := q.db.QueryContext(ctx, getOrdersByCustomerID, customerID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Order
+	for rows.Next() {
+		var i Order
+		if err := rows.Scan(
+			&i.ID,
+			&i.CustomerID,
+			&i.CompanyID,
+			&i.EscrowID,
+			&i.TotalAmount,
+			&i.Status,
+			&i.Description,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const paidOrder = `-- name: PaidOrder :one
 UPDATE orders
 SET status = 'paid', updated_at = Now()
