@@ -216,7 +216,7 @@ func GetOrders(h *handlers.Handlers) http.HandlerFunc {
 			Orders = handlers.DatabaseOrdersToOrders(dbOrders)
 		}
 		if role == "company" {
-			dbOrders, err := h.DB.GetOrdersByCustomerID(r.Context(), id)
+			dbOrders, err := h.DB.GetOrdersByCompanyID(r.Context(), id)
 			if err != nil {
 				apiutils.RespondWithError(h.ZapLogger, w, http.StatusBadRequest, "Could not get orders")
 				return
