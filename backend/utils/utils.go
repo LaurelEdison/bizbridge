@@ -2,9 +2,12 @@ package utils
 
 import (
 	"errors"
+	"os"
+	"strconv"
+
+	"github.com/shopspring/decimal"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/bcrypt"
-	"os"
 )
 
 func GetPort(logger *zap.Logger) string {
@@ -31,4 +34,12 @@ func CreatePasswordHash(password string) (string, error) {
 		return "", err
 	}
 	return string(bytes), nil
+}
+
+func FloatToDecimal(amount float64) decimal.Decimal {
+	return decimal.NewFromFloat(amount).Round(2)
+}
+
+func NumericStringToFloat(s string) (float64, error) {
+	return strconv.ParseFloat(s, 64)
 }
