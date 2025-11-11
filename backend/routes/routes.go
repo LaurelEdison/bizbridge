@@ -11,6 +11,8 @@ import (
 	"github.com/LaurelEdison/bizbridge/handlers/company"
 	"github.com/LaurelEdison/bizbridge/handlers/customer"
 	"github.com/LaurelEdison/bizbridge/handlers/healthz"
+	"github.com/LaurelEdison/bizbridge/handlers/order"
+	"github.com/LaurelEdison/bizbridge/handlers/payment"
 	"github.com/LaurelEdison/bizbridge/handlers/sector"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
@@ -38,6 +40,9 @@ func SetupRoutes(h *handlers.Handlers, router chi.Router) {
 
 	router.Group(func(router chi.Router) {
 		router.Use(auth.JWTAuthMiddleware)
+
+		router.Get("/wallet", payment.GetWallet(h))
+		router.Post("/wallet/deposit", payment.AddFunds(h))
 
 		router.Get("/customer/me", customer.GetMe(h))
 		router.Patch("/customer/update", customer.UpdateCustomerDetails(h))
