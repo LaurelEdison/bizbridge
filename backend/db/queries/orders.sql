@@ -30,3 +30,7 @@ RETURNING *;
 
 -- name: GetOrderByID :one
 SELECT * FROM orders WHERE id = $1;
+-- name: GetOrdersByCompanyID :many
+SELECT * FROM orders WHERE company_id = $1;
+-- name: GetOrdersByCustomerID :many
+SELECT * FROM orders WHERE customer_id = $1;
