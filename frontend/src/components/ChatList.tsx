@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { getChatRooms } from "../api/chat";
 import type { ChatRoom } from "../store/chatStore";
 import { useAuthStore } from "../store/auth";
+import defaultAvatar from "../assets/defaultpfp.jpg";
 
 type Props = {
 	selectedRoomID?: string | null;
@@ -72,7 +73,7 @@ export function ChatList({ selectedRoomID, onSelect }: Props) {
 										className="w-11 h-11 rounded-full object-cover border border-gray-300 shadow-sm"
 										onError={(e) => {
 											(e.target as HTMLImageElement).src =
-												"/default-avatar.png";
+												defaultAvatar;
 										}}
 									/>
 									<span className="absolute bottom-0 right-0 w-3 h-3 bg-green-400 border-2 border-white rounded-full"></span>
