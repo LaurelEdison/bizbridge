@@ -44,6 +44,10 @@ func SetupRoutes(h *handlers.Handlers, router chi.Router) {
 		router.Get("/wallet", payment.GetWallet(h))
 		router.Post("/wallet/deposit", payment.AddFunds(h))
 
+		router.Post("/order", order.CreateOrder(h))
+		router.Post("/order/refund", order.RefundOrder(h))
+		router.Post("/order/complete", order.CompleteOrder(h))
+
 		router.Get("/customer/me", customer.GetMe(h))
 		router.Patch("/customer/update", customer.UpdateCustomerDetails(h))
 		router.Post("/customer/upload", customer.FileUpload(h))
