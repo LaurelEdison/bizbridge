@@ -12,4 +12,4 @@ CREATE TABLE companies(
   updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 -- +goose Down
-DROP TABLE customers;
+DROP TABLE companies;

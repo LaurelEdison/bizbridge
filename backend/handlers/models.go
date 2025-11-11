@@ -249,3 +249,83 @@ func DatabaseCompanyBannersToCompanyBanners(dbCompanyBanners []database.CompanyB
 	}
 	return companyBanners
 }
+
+type Wallet struct {
+	ID        uuid.UUID `json:"id"`
+	OwnerRole string    `json:"owner_role"`
+	OwnerID   uuid.UUID `json:"owner_id"`
+	Balance   string    `json:"balance"`
+	Currency  string    `json:"currency"`
+	CreatedAt time.Time `json:"create_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+}
+
+func DatabaseWalletToWallet(dbWallet database.Wallet) Wallet {
+	return Wallet{
+		ID:        dbWallet.ID,
+		OwnerRole: dbWallet.OwnerRole,
+		OwnerID:   dbWallet.OwnerID,
+		Balance:   dbWallet.Balance,
+		Currency:  dbWallet.Currency,
+		CreatedAt: dbWallet.CreatedAt,
+		UpdatedAt: dbWallet.UpdatedAt,
+	}
+}
+
+type EscrowAccount struct {
+	ID         uuid.UUID    `json:"id"`
+	InvestorID uuid.UUID    `json:"investor_id"`
+	BusinessID uuid.UUID    `json:"business_id"`
+	Amount     string       `json:"amount"`
+	Status     string       `json:"status"`
+	CreatedAt  time.Time    `json:"created_at"`
+	UpdatedAt  time.Time    `json:"updated_at"`
+	ReleasedAt sql.NullTime `json:"released_at"`
+}
+
+func DatabaseEscrowToEscrow(dbEscrow database.EscrowAccount) EscrowAccount {
+	return EscrowAccount{
+		ID:         dbEscrow.ID,
+		InvestorID: dbEscrow.InvestorID,
+		BusinessID: dbEscrow.BusinessID,
+		Amount:     dbEscrow.Amount,
+		Status:     dbEscrow.Status,
+		CreatedAt:  dbEscrow.CreatedAt,
+		UpdatedAt:  dbEscrow.UpdatedAt,
+		ReleasedAt: dbEscrow.ReleasedAt,
+	}
+}
+
+type Order struct {
+	ID          uuid.UUID      `json:"id"`
+	CustomerID  uuid.UUID      `json:"customer_id"`
+	CompanyID   uuid.UUID      `json:"company_id"`
+	EscrowID    uuid.NullUUID  `json:"escrow_id"`
+	TotalAmount string         `json:"total_amount"`
+	Status      string         `json:"status"`
+	Description sql.NullString `json:"description"`
+	CreatedAt   time.Time      `json:"created_at"`
+	UpdatedAt   time.Time      `json:"updated_at"`
+}
+
+func DatabaseOrderToOrder(dbOrder database.Order) Order {
+	return Order{
+		ID:          dbOrder.ID,
+		CustomerID:  dbOrder.CustomerID,
+		CompanyID:   dbOrder.CompanyID,
+		EscrowID:    dbOrder.EscrowID,
+		TotalAmount: dbOrder.TotalAmount,
+		Status:      dbOrder.Status,
+		Description: dbOrder.Description,
+		CreatedAt:   dbOrder.CreatedAt,
+		UpdatedAt:   dbOrder.UpdatedAt,
+	}
+}
+
+func DatabaseOrdersToOrders(dbOrders []database.Order) []Order {
+	Orders := []Order{}
+	for _, dbOrder := range dbOrders {
+		Orders = append(Orders, DatabaseOrderToOrder(dbOrder))
+	}
+	return Orders
+}

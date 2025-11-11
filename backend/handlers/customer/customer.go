@@ -16,6 +16,7 @@ import (
 	"github.com/LaurelEdison/bizbridge/utils"
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
+	"go.uber.org/zap"
 )
 
 func CreateCustomer(h *handlers.Handlers) http.HandlerFunc {
@@ -56,6 +57,22 @@ func CreateCustomer(h *handlers.Handlers) http.HandlerFunc {
 			apiutils.RespondWithError(h.ZapLogger, w, http.StatusInternalServerError, "Could not create customer")
 			return
 		}
+
+		_, err = h.DB.CreateWallet(r.Context(), database.CreateWalletParams{
+			ID:        uuid.New(),
+			OwnerRole: "customer",
+			OwnerID:   customer.ID,
+			Balance:   utils.FloatToDecimal(0.0).String(),
+			Currency:  "USD",
+			CreatedAt: time.Now(),
+			UpdatedAt: time.Now(),
+		})
+		if err != nil {
+			apiutils.RespondWithError(h.ZapLogger, w, http.StatusInternalServerError, "Failed to create wallet")
+			h.ZapLogger.Error("Error creating wallet", zap.Error(err))
+			return
+		}
+
 		apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, handlers.DatabaseCustomerToCustomer(customer))
 	}
 }

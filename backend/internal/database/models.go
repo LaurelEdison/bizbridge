@@ -11,6 +11,15 @@ import (
 	"github.com/google/uuid"
 )
 
+type AuditLog struct {
+	ID        uuid.UUID
+	UserRole  sql.NullString
+	UserID    uuid.UUID
+	Action    string
+	UpdatedAt time.Time
+	CreatedAt time.Time
+}
+
 type ChatRoom struct {
 	ID           uuid.UUID
 	CustomerID   uuid.UUID
@@ -72,6 +81,17 @@ type CustomerFile struct {
 	UploadedAt time.Time
 }
 
+type EscrowAccount struct {
+	ID         uuid.UUID
+	InvestorID uuid.UUID
+	BusinessID uuid.UUID
+	Amount     string
+	Status     string
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
+	ReleasedAt sql.NullTime
+}
+
 type Message struct {
 	ID         uuid.UUID
 	ChatRoomID uuid.UUID
@@ -85,6 +105,18 @@ type Message struct {
 	IsRead     sql.NullBool
 }
 
+type Order struct {
+	ID          uuid.UUID
+	CustomerID  uuid.UUID
+	CompanyID   uuid.UUID
+	EscrowID    uuid.NullUUID
+	TotalAmount string
+	Status      string
+	Description sql.NullString
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+}
+
 type ProfileSector struct {
 	CompanyID uuid.UUID
 	SectorID  uuid.UUID
@@ -93,4 +125,25 @@ type ProfileSector struct {
 type Sector struct {
 	ID   uuid.UUID
 	Name string
+}
+
+type Transaction struct {
+	ID              uuid.UUID
+	WalletID        uuid.UUID
+	Amount          string
+	TransactionType string
+	RelatedEscrowID uuid.NullUUID
+	IdempotencyKey  sql.NullString
+	UpdatedAt       time.Time
+	CreatedAt       time.Time
+}
+
+type Wallet struct {
+	ID        uuid.UUID
+	OwnerRole string
+	OwnerID   uuid.UUID
+	Balance   string
+	Currency  string
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
