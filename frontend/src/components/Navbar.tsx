@@ -1,5 +1,6 @@
 import { useAuthStore } from "../store/auth";
 import logo from "../assets/logoPutih.png"
+import WalletMenu from "./WalletMenu";
 
 export function Navbar() {
 	const { token, role, logout } = useAuthStore();
@@ -32,17 +33,24 @@ export function Navbar() {
 					</>
 				) : role === "customer" ? (
 					<>
-						<a
-							href="/chat"
-							className="hover:text-[rgba(252,204,98,1)] transition"
-						>
-							Chat
-						</a>
+						<WalletMenu />
 						<a
 							href="/search"
 							className="hover:text-[rgba(252,204,98,1)] transition"
 						>
 							Search
+						</a>
+						<a
+							href="/order"
+							className="hover:text-[rgba(252,204,98,1)] transition"
+						>
+							Orders
+						</a>
+						<a
+							href="/chat"
+							className="hover:text-[rgba(252,204,98,1)] transition"
+						>
+							Chat
 						</a>
 						<a
 							href="/profile"
@@ -62,6 +70,13 @@ export function Navbar() {
 					</>
 				) : role === "company" ? (
 					<>
+						<WalletMenu />
+						<a
+							href="/order"
+							className="hover:text-[rgba(252,204,98,1)] transition"
+						>
+							Orders
+						</a>
 						<a
 							href="/chat"
 							className="hover:text-[rgba(252,204,98,1)] transition"
