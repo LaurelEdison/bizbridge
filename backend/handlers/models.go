@@ -296,3 +296,28 @@ func DatabaseEscrowToEscrow(dbEscrow database.EscrowAccount) EscrowAccount {
 	}
 }
 
+type Order struct {
+	ID          uuid.UUID
+	CustomerID  uuid.UUID
+	CompanyID   uuid.UUID
+	EscrowID    uuid.NullUUID
+	TotalAmount string
+	Status      string
+	Description sql.NullString
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+}
+
+func DatabaseOrderToOrder(dbOrder database.Order) Order {
+	return Order{
+		ID:          dbOrder.ID,
+		CustomerID:  dbOrder.CustomerID,
+		CompanyID:   dbOrder.CompanyID,
+		EscrowID:    dbOrder.EscrowID,
+		TotalAmount: dbOrder.TotalAmount,
+		Status:      dbOrder.Status,
+		Description: dbOrder.Description,
+		CreatedAt:   dbOrder.CreatedAt,
+		UpdatedAt:   dbOrder.UpdatedAt,
+	}
+}
