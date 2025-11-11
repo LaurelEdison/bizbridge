@@ -45,6 +45,7 @@ func SetupRoutes(h *handlers.Handlers, router chi.Router) {
 		router.Post("/wallet/deposit", payment.AddFunds(h))
 
 		router.Post("/order", order.CreateOrder(h))
+		router.Get("/order/all", order.GetOrders(h))
 		router.Post("/order/refund", order.RefundOrder(h))
 		router.Post("/order/complete", order.CompleteOrder(h))
 
