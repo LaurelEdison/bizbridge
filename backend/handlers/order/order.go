@@ -97,6 +97,7 @@ func CreateOrder(h *handlers.Handlers) http.HandlerFunc {
 
 	}
 }
+
 func RefundOrder(h *handlers.Handlers) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		type Parameters struct {
@@ -142,6 +143,7 @@ func RefundOrder(h *handlers.Handlers) http.HandlerFunc {
 		)
 	}
 }
+
 func CompleteOrder(h *handlers.Handlers) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		type Parameters struct {
@@ -186,6 +188,42 @@ func CompleteOrder(h *handlers.Handlers) http.HandlerFunc {
 			"escrow": handlers.DatabaseEscrowToEscrow(updatedEscrow)},
 		)
 
+	}
+}
+
+func GetOrders(h *handlers.Handlers) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		claims, ok := auth.GetClaims(r.Context())
+		if !ok {
+			apiutils.RespondWithError(h.ZapLogger, w, http.StatusUnauthorized, "Invalid claims")
+			return
+		}
+		role := claims["role"].(string)
+		idstr := claims["id"].(string)
+		id, err := uuid.Parse(idstr)
+		if err != nil {
+			apiutils.RespondWithError(h.ZapLogger, w, http.StatusBadRequest, "Invalid id")
+			return
+		}
+		var Orders []handlers.Order
+
+		if role == "customer" {
+			dbOrders, err := h.DB.GetOrdersByCustomerID(r.Context(), id)
+			if err != nil {
+				apiutils.RespondWithError(h.ZapLogger, w, http.StatusBadRequest, "Could not get orders")
+				return
+			}
+			Orders = handlers.DatabaseOrdersToOrders(dbOrders)
+		}
+		if role == "company" {
+			dbOrders, err := h.DB.GetOrdersByCustomerID(r.Context(), id)
+			if err != nil {
+				apiutils.RespondWithError(h.ZapLogger, w, http.StatusBadRequest, "Could not get orders")
+				return
+			}
+			Orders = handlers.DatabaseOrdersToOrders(dbOrders)
+		}
+		apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, Orders)
 	}
 }
 
