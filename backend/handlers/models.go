@@ -249,3 +249,26 @@ func DatabaseCompanyBannersToCompanyBanners(dbCompanyBanners []database.CompanyB
 	}
 	return companyBanners
 }
+
+type Wallet struct {
+	ID        uuid.UUID `json:"id"`
+	OwnerRole string    `json:"owner_role"`
+	OwnerID   uuid.UUID `json:"owner_id"`
+	Balance   string    `json:"balance"`
+	Currency  string    `json:"currency"`
+	CreatedAt time.Time `json:"create_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+}
+
+func DatabaseWalletToWallet(dbWallet database.Wallet) Wallet {
+	return Wallet{
+		ID:        dbWallet.ID,
+		OwnerRole: dbWallet.OwnerRole,
+		OwnerID:   dbWallet.OwnerID,
+		Balance:   dbWallet.Balance,
+		Currency:  dbWallet.Currency,
+		CreatedAt: dbWallet.CreatedAt,
+		UpdatedAt: dbWallet.UpdatedAt,
+	}
+}
+
