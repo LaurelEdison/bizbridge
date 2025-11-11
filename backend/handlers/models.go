@@ -321,3 +321,11 @@ func DatabaseOrderToOrder(dbOrder database.Order) Order {
 		UpdatedAt:   dbOrder.UpdatedAt,
 	}
 }
+
+func DatabaseOrdersToOrders(dbOrders []database.Order) []Order {
+	Orders := []Order{}
+	for _, dbOrder := range dbOrders {
+		Orders = append(Orders, DatabaseOrderToOrder(dbOrder))
+	}
+	return Orders
+}
