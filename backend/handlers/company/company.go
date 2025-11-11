@@ -51,6 +51,20 @@ func CreateCompany(h *handlers.Handlers) http.HandlerFunc {
 			apiutils.RespondWithError(h.ZapLogger, w, http.StatusInternalServerError, "Failed to create company")
 			return
 		}
+		_, err = h.DB.CreateWallet(r.Context(), database.CreateWalletParams{
+			ID:        uuid.New(),
+			OwnerRole: "company",
+			OwnerID:   company.ID,
+			Balance:   utils.FloatToDecimal(0.0).String(),
+			Currency:  "USD",
+			CreatedAt: time.Now(),
+			UpdatedAt: time.Now(),
+		})
+		if err != nil {
+			apiutils.RespondWithError(h.ZapLogger, w, http.StatusInternalServerError, "Failed to create wallet")
+			h.ZapLogger.Error("Error creating wallet", zap.Error(err))
+			return
+		}
 
 		apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, handlers.DatabaseCompanyToCompany(company))
 	}
