@@ -272,3 +272,27 @@ func DatabaseWalletToWallet(dbWallet database.Wallet) Wallet {
 	}
 }
 
+type EscrowAccount struct {
+	ID         uuid.UUID
+	InvestorID uuid.UUID
+	BusinessID uuid.UUID
+	Amount     string
+	Status     string
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
+	ReleasedAt sql.NullTime
+}
+
+func DatabaseEscrowToEscrow(dbEscrow database.EscrowAccount) EscrowAccount {
+	return EscrowAccount{
+		ID:         dbEscrow.ID,
+		InvestorID: dbEscrow.InvestorID,
+		BusinessID: dbEscrow.BusinessID,
+		Amount:     dbEscrow.Amount,
+		Status:     dbEscrow.Status,
+		CreatedAt:  dbEscrow.CreatedAt,
+		UpdatedAt:  dbEscrow.UpdatedAt,
+		ReleasedAt: dbEscrow.ReleasedAt,
+	}
+}
+
