@@ -273,14 +273,14 @@ func DatabaseWalletToWallet(dbWallet database.Wallet) Wallet {
 }
 
 type EscrowAccount struct {
-	ID         uuid.UUID
-	InvestorID uuid.UUID
-	BusinessID uuid.UUID
-	Amount     string
-	Status     string
-	CreatedAt  time.Time
-	UpdatedAt  time.Time
-	ReleasedAt sql.NullTime
+	ID         uuid.UUID    `json:"id"`
+	InvestorID uuid.UUID    `json:"investor_id"`
+	BusinessID uuid.UUID    `json:"business_id"`
+	Amount     string       `json:"amount"`
+	Status     string       `json:"status"`
+	CreatedAt  time.Time    `json:"created_at"`
+	UpdatedAt  time.Time    `json:"updated_at"`
+	ReleasedAt sql.NullTime `json:"released_at"`
 }
 
 func DatabaseEscrowToEscrow(dbEscrow database.EscrowAccount) EscrowAccount {
@@ -297,15 +297,15 @@ func DatabaseEscrowToEscrow(dbEscrow database.EscrowAccount) EscrowAccount {
 }
 
 type Order struct {
-	ID          uuid.UUID
-	CustomerID  uuid.UUID
-	CompanyID   uuid.UUID
-	EscrowID    uuid.NullUUID
-	TotalAmount string
-	Status      string
-	Description sql.NullString
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
+	ID          uuid.UUID      `json:"id"`
+	CustomerID  uuid.UUID      `json:"customer_id"`
+	CompanyID   uuid.UUID      `json:"company_id"`
+	EscrowID    uuid.NullUUID  `json:"escrow_id"`
+	TotalAmount string         `json:"total_amount"`
+	Status      string         `json:"status"`
+	Description sql.NullString `json:"description"`
+	CreatedAt   time.Time      `json:"created_at"`
+	UpdatedAt   time.Time      `json:"updated_at"`
 }
 
 func DatabaseOrderToOrder(dbOrder database.Order) Order {
