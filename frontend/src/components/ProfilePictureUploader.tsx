@@ -38,7 +38,7 @@ export function ProfilePictureUploader({
 				src={preview || currentPhoto}
 				className="w-24 h-24 rounded-full object-cover border"
 			/>
-			<label className="cursor-pointer text-blue-600 hover:underline">
+			<label className="cursor-pointer text-[#094233] hover:underline">
 				{uploading ? "Uploading..." : "Change Photo"}
 				<input
 					type="file"

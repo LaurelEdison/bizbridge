@@ -54,7 +54,7 @@ export function CompanyFileUploader({ companyId }: { companyId: string }) {
 				<button
 					onClick={handleUpload}
 					disabled={!selectedFiles.length || uploading}
-					className={`px-4 py-2 rounded-lg text-white text-sm font-medium transition ${uploading || !selectedFiles.length ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"
+					className={`px-4 py-2 rounded-lg text-white text-sm font-medium transition ${uploading || !selectedFiles.length ? "bg-gray-400 cursor-not-allowed" : "bg-[#276749] hover:bg-[#2f855a]"
 						}`}
 				>
 					{uploading ? "Uploading..." : "Upload"}

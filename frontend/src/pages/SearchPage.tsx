@@ -47,7 +47,7 @@ export function SearchPage() {
 					</div>
 					<button
 						onClick={handleSearch}
-						className="bg-[#198754] text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+						className="bg-[#198754] text-white px-4 py-2 rounded hover:bg-[#276749] transition"
 					>
 						Search
 					</button>
@@ -81,7 +81,7 @@ export function SearchPage() {
 										}
 									}
 									}
-									className="mt-2 text-sm bg-[#198754] text-white px-3 py-1 rounded"
+									className="mt-2 text-sm bg-[#198754] text-white px-3 py-1 rounded hover:bg-[#276749]"
 								>
 									Message
 								</button>
