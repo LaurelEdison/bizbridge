@@ -27,3 +27,10 @@ Bizbridge is a platform that connects Indonesian entrepreneurs with overseas cus
 - **Backend:** Go  
 - **Database:** PostgreSQL  
 - **Hosting:** HyperCloudHost
+
+## Project Status
+
+**School Project / Learning Prototype**  
+Bizbridge is currently a school project and is not a full commercial platform. Its purpose is to demonstrate the design and implementation of a cross-border business platform, with emphasis on secure transactions, real-time communication, and containerized deployment.  
+
+Contributions and feedback are welcome, especially on architecture, usability, and implementation best practices.
