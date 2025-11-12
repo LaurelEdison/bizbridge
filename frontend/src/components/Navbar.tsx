@@ -13,7 +13,9 @@ export function Navbar() {
 					alt="BizBridge Logo"
 					className="h-12 w-auto object-contain"
 				/>
-
+				<span className="text-white font-bold text-2xl hover:text-[rgba(252,204,98,1)] transition">
+					BizBridge
+				</span>
 			</a>
 			<div className="flex items-center gap-6 text-white text-lg font-medium">
 				{!token ? (

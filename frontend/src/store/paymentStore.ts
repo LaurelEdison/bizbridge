@@ -29,7 +29,9 @@ export type EscrowAccount = {
 export type Order = {
 	id: string;
 	customer_id: string;
+	customer_name: string;
 	company_id: string;
+	company_name: string;
 	escrow_id: NullUUID;
 	total_amount: string;
 	status: string;

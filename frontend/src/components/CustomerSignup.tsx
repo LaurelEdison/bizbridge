@@ -37,42 +37,45 @@ export default function CustomerSignup() {
 	return (
 		<form
 			onSubmit={handleCustomerSignup}
-			className="flex flex-col gap-4 w-full max-w-md p-8 bg-white rounded-2xl shadow-md border border-gray-100"
+			className="flex flex-col gap-5 w-full max-w-md p-8 bg-white shadow-md rounded-2xl border border-gray-100"
 		>
-			<h2 className="text-2xl font-semibold text-center text-indigo-700">
+			<h2 className="text-2xl font-semibold text-[#094233] text-center mb-2">
 				Customer Sign Up
 			</h2>
+			<p className="text-gray-600 text-center text-sm mb-4">
+				Create your account to explore BizBridge and connect with trusted businesses.
+			</p>
 
 			<input
-				className="border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 outline-none transition"
+				className="border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-[#094233] transition"
 				placeholder="Name"
 				type="text"
 				value={name}
 				onChange={(s) => setName(s.target.value)}
 			/>
 			<input
-				className="border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 outline-none transition"
+				className="border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-[#094233] transition"
 				placeholder="Email"
 				type="email"
 				value={email}
 				onChange={(s) => setEmail(s.target.value)}
 			/>
 			<input
-				className="border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 outline-none transition"
+				className="border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-[#094233] transition"
 				placeholder="Password"
 				type="password"
 				value={password}
 				onChange={(s) => setPassword(s.target.value)}
 			/>
 			<input
-				className="border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 outline-none transition"
+				className="border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-[#094233] transition"
 				placeholder="Description"
 				type="text"
 				value={description}
 				onChange={(s) => setDescription(s.target.value)}
 			/>
 			<input
-				className="border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 outline-none transition"
+				className="border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-[#094233] transition"
 				placeholder="Country"
 				type="text"
 				value={country}
@@ -80,8 +83,13 @@ export default function CustomerSignup() {
 			/>
 
 			<button
-				className="mt-4 bg-indigo-600 text-white font-medium py-3 rounded-lg hover:bg-indigo-700 active:scale-[0.98] transition-transform duration-150 shadow-sm"
 				type="submit"
+				disabled={!name.trim() || !email.trim() || !password.trim() || !country.trim() || !description.trim()}
+				className={`mt-2 py-3 rounded-full text-white font-semibold transition
+      ${!name.trim() || !email.trim() || !password.trim() || !country.trim() || !description.trim()
+						? "bg-gray-400 cursor-not-allowed"
+						: "bg-[#094233] hover:bg-[#276749]"
+					}`}
 			>
 				Sign Up
 			</button>
