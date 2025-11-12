@@ -68,12 +68,14 @@ export default function CompanyLogin() {
 			/>
 
 			{error && <p className="text-red-500 text-sm text-center">{error}</p>}
-
 			<button
 				type="submit"
-				disabled={loading}
-				className={`mt-2 py-3 rounded-full text-white font-semibold transition 
-					${loading ? "bg-gray-400 cursor-not-allowed" : "bg-[#094233] hover:bg-[#276749]"}`}
+				disabled={loading || !email.trim() || !password.trim()}
+				className={`mt-2 py-3 rounded-full text-white font-semibold transition
+    ${loading || !email.trim() || !password.trim()
+						? "bg-gray-400 cursor-not-allowed"
+						: "bg-[#094233] hover:bg-[#276749]"
+					}`}
 			>
 				{loading ? "Logging in..." : "Login"}
 			</button>
