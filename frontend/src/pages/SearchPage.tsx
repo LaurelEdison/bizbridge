@@ -81,7 +81,7 @@ export function SearchPage() {
 										}
 									}
 									}
-									className="mt-2 text-sm bg-blue-500 text-white px-3 py-1 rounded"
+									className="mt-2 text-sm bg-[#198754] text-white px-3 py-1 rounded"
 								>
 									Message
 								</button>
