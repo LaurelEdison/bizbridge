@@ -74,9 +74,6 @@ export function Info() {
 						<br />
 						Are you interested in companies in BizBridge?
 					</p>
-					<button className="mt-6 text-[20px] px-[70px] py-[20px] bg-[#094233] text-white rounded-[40px] hover:bg-[#276749] transition">
-						Check It Out!
-					</button>
 				</div>
 			</section>
 		</div>

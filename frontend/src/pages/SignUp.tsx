@@ -3,16 +3,17 @@ import { motion, AnimatePresence } from "framer-motion";
 import CustomerSignup from "../components/CustomerSignup";
 import CompanySignup from "../components/CompanySignup";
 import { Navbar } from "../components/Navbar";
+import Footer from "../components/Footer";
 
 export default function Signup() {
 	const [mode, setMode] = useState<"customer" | "company">("customer");
 	const switchMode = () => setMode(mode === "customer" ? "company" : "customer");
 
 	return (
-		<div className="flex flex-col min-h-screen w-full overflow-hidden font-[Inria_Serif] bg-[#f9fafb] text-[#2d3748]">
+		<div className="flex flex-col min-h-screen w-full overflow-x-hidden font-[Inria_Serif] bg-[#f9fafb] text-[#2d3748]">
 			<Navbar />
 
-			<div className="flex flex-1 items-center justify-center px-6 py-12">
+			<main className="flex-1 min-h-screen flex items-center justify-center px-6 py-12 overflow-y-auto">
 				<div className="w-full max-w-5xl flex rounded-2xl shadow-lg overflow-hidden bg-white border border-gray-100">
 
 					<div
@@ -83,7 +84,8 @@ export default function Signup() {
 						</AnimatePresence>
 					</div>
 				</div>
-			</div>
+			</main>
+			<Footer />
 		</div>
 	);
 }

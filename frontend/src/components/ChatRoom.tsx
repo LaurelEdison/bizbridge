@@ -22,7 +22,7 @@ export function ChatRoom({ chatRoomID, companyID, customerID }: { chatRoomID: st
 	return (
 		<div className="flex flex-col h-full bg-gradient-to-b from-gray-100 to-gray-50">
 			{/* Messages */}
-			<div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
+			<div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 pb-24">
 				{messages.map((m, idx) => {
 					const isMine = m.sender.id === myID;
 					const showAvatar =
@@ -79,7 +79,7 @@ export function ChatRoom({ chatRoomID, companyID, customerID }: { chatRoomID: st
 			</div>
 
 			{/* Input + Order */}
-			<div className="border-t border-gray-200 bg-white p-3 flex items-center gap-2">
+			<div className="sticky bottom-0 left-0 right-0 border-t border-gray-200 bg-white p-3 flex items-center gap-2">
 				<CreateOrderButton recipientId={otherID} chatRoomID={chatRoomID} />
 
 				<input
