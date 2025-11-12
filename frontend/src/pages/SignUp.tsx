@@ -4,6 +4,8 @@ import CustomerSignup from "../components/CustomerSignup";
 import CompanySignup from "../components/CompanySignup";
 import { Navbar } from "../components/Navbar";
 import Footer from "../components/Footer";
+import signupImage1 from "../assets/loginCarousel1.png";
+import signupImage2 from "../assets/loginCarousel2.png";
 
 export default function Signup() {
 	const [mode, setMode] = useState<"customer" | "company">("customer");
@@ -16,9 +18,9 @@ export default function Signup() {
 			<main className="flex-1 min-h-screen flex items-center justify-center px-6 py-12 overflow-y-auto">
 				<div className="w-full max-w-5xl flex rounded-2xl shadow-lg overflow-hidden bg-white border border-gray-100">
 
+					{/* Left Panel */}
 					<div
-						className={`flex-1 flex items-center justify-center transition-colors duration-500 ${mode === "customer" ? "bg-[#fdf6ec]" : "bg-[#f1f5f4]"
-							}`}
+						className={`flex-1 flex items-center justify-center transition-colors duration-500 ${mode === "customer" ? "bg-[#fdf6ec]" : "bg-[#f1f5f4]"} relative`}
 					>
 						<AnimatePresence mode="wait">
 							{mode === "customer" && (
@@ -28,7 +30,7 @@ export default function Signup() {
 									animate={{ opacity: 1, x: 0 }}
 									exit={{ opacity: 0, x: 60 }}
 									transition={{ duration: 0.5 }}
-									className="flex flex-col justify-center items-center text-center p-10 min-h-[650px] w-full"
+									className="flex flex-col justify-center items-center text-center p-10 min-h-[650px] w-full z-10"
 								>
 									<h2 className="text-3xl font-bold mb-3 text-[#094233]">
 										Customer Signup
@@ -48,11 +50,18 @@ export default function Signup() {
 								</motion.div>
 							)}
 						</AnimatePresence>
+
+						{/* Background image */}
+						<img
+							src={signupImage1}
+							alt="Signup visual"
+							className="absolute inset-0 w-full h-full object-cover "
+						/>
 					</div>
 
+					{/* Right Panel */}
 					<div
-						className={`flex-1 flex items-center justify-center transition-colors duration-500 ${mode === "company" ? "bg-[#e9f5ee]" : "bg-[#f1f5f4]"
-							}`}
+						className={`flex-1 flex items-center justify-center transition-colors duration-500 ${mode === "company" ? "bg-[#e9f5ee]" : "bg-[#f1f5f4]"} relative`}
 					>
 						<AnimatePresence mode="wait">
 							{mode === "company" && (
@@ -62,7 +71,7 @@ export default function Signup() {
 									animate={{ opacity: 1, x: 0 }}
 									exit={{ opacity: 0, x: -60 }}
 									transition={{ duration: 0.5 }}
-									className="flex flex-col justify-center items-center text-center p-10 min-h-[650px] w-full"
+									className="flex flex-col justify-center items-center text-center p-10 min-h-[650px] w-full z-10"
 								>
 									<h2 className="text-3xl font-bold mb-3 text-[#094233]">
 										Company Signup
@@ -82,7 +91,15 @@ export default function Signup() {
 								</motion.div>
 							)}
 						</AnimatePresence>
+
+						{/* Background image */}
+						<img
+							src={signupImage2}
+							alt="Signup visual"
+							className="absolute inset-0 w-full h-full object-cover opacity-20"
+						/>
 					</div>
+
 				</div>
 			</main>
 			<Footer />
