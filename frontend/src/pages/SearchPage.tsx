@@ -5,6 +5,7 @@ import { createChatRoom } from "../api/chat";
 import { Navbar } from "../components/Navbar";
 import { CompanyFileGallery } from "../components/CompanyFileGallery";
 import { CompanyBannerCarousel } from "../components/CompanyBannerCarousel";
+import Footer from "../components/Footer";
 
 export function SearchPage() {
 	const [query, setQuery] = useState("");
@@ -30,9 +31,9 @@ export function SearchPage() {
 	}, []);
 
 	return (
-		<div className="flex flex-col h-screen w-full overflow-hidden">
+		<div className="flex flex-col min-h-screen w-full overflow-x-hidden">
 			<Navbar />
-			<div className="p-6 max-w-5xl mx-auto">
+			<main className="flex-1 min-h-screen p-6 max-w-5xl mx-auto w-full">
 				<h1 className="text-2xl font-semibold mb-4">Find Companies</h1>
 
 				<div className="flex flex-col md:flex-row gap-4 mb-6">
@@ -92,7 +93,8 @@ export function SearchPage() {
 				{!loading && results.length === 0 && (
 					<div className="text-gray-500 text-center mt-8">No results found.</div>
 				)}
-			</div>
+			</main>
+			<Footer />
 		</div>
 	);
 }

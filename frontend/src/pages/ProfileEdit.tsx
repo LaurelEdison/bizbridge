@@ -7,7 +7,7 @@ import DefaultPFP from "../assets/defaultpfp.jpg";
 import { CompanyFileUploader } from "../components/CompanyFileUploader";
 import { ProfilePictureUploader } from "../components/ProfilePictureUploader";
 import { BannerUploader } from "../components/BannerUploader";
-
+import Footer from "../components/Footer";
 export default function ProfileEdit() {
 	const { role, customer, company, setCompany, setCustomer } = useAuthStore();
 	const [loading, setLoading] = useState(true);
@@ -75,10 +75,10 @@ export default function ProfileEdit() {
 	if (loading) return <p className="text-gray-500 text-center mt-10">Loading profile...</p>;
 
 	return (
-		<div className="flex flex-col h-screen w-full overflow-hidden font-[Inria_Serif] bg-[#f9fafb] text-[#2d3748]">
+		<div className="flex flex-col min-h-screen w-full font-[Inria_Serif] bg-[#f9fafb] text-[#2d3748]">
 			<Navbar />
 
-			<div className="flex-1 overflow-auto p-6">
+			<main className="flex-1 min-h-screen overflow-y-auto p-6">
 				<div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-md border border-gray-100 p-8">
 					{/* Header */}
 					<div className="flex items-center gap-4 mb-6 border-b border-gray-100 pb-4">
@@ -242,7 +242,10 @@ export default function ProfileEdit() {
 						</div>
 					)}
 				</div>
-			</div>
+			</main>
+
+			<Footer />
 		</div>
 	);
 }
+
