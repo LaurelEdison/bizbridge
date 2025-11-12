@@ -3,11 +3,13 @@ import type { Order } from "../store/paymentStore";
 import { completeOrder, getOrders, refundOrder } from "../api/payment";
 import { Navbar } from "../components/Navbar";
 import Footer from "../components/Footer";
+
 export default function OrdersPage() {
 	const [orders, setOrders] = useState<Order[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [actionLoading, setActionLoading] = useState<string | null>(null);
 	const [error, setError] = useState<string | null>(null);
+	const [selectedOrder, setSelectedOrder] = useState<Order | null>(null); // For modal
 
 	const fetchOrders = async () => {
 		setLoading(true);
@@ -26,10 +28,7 @@ export default function OrdersPage() {
 		fetchOrders();
 	}, []);
 
-	const handleAction = async (
-		order_id: string,
-		action: "complete" | "refund"
-	) => {
+	const handleAction = async (order_id: string, action: "complete" | "refund") => {
 		setActionLoading(order_id);
 		try {
 			if (action === "complete") await completeOrder(order_id);
@@ -42,6 +41,7 @@ export default function OrdersPage() {
 			setActionLoading(null);
 		}
 	};
+
 	return (
 		<div className="flex flex-col min-h-screen bg-gradient-to-b from-gray-100 to-gray-50">
 			<Navbar />
@@ -57,9 +57,7 @@ export default function OrdersPage() {
 					) : error ? (
 						<p className="text-red-500">{error}</p>
 					) : orders.length === 0 ? (
-						<p className="text-gray-500 text-center py-6">
-							No orders found.
-						</p>
+						<p className="text-gray-500 text-center py-6">No orders found.</p>
 					) : (
 						<div className="overflow-x-auto">
 							<table className="w-full border-collapse">
@@ -82,12 +80,8 @@ export default function OrdersPage() {
 											<td className="px-4 py-2 font-mono text-xs text-gray-600">
 												{o.id.slice(0, 8)}...
 											</td>
-											<td className="px-4 py-2 text-sm text-gray-700">
-												{o.customer_id}
-											</td>
-											<td className="px-4 py-2 text-sm text-gray-700">
-												{o.company_id}
-											</td>
+											<td className="px-4 py-2 text-sm text-gray-700">{o.customer_name}</td>
+											<td className="px-4 py-2 text-sm text-gray-700">{o.company_name}</td>
 											<td className="px-4 py-2 text-sm text-gray-800 font-semibold">
 												${parseFloat(o.total_amount).toLocaleString()}
 											</td>
@@ -104,36 +98,64 @@ export default function OrdersPage() {
 												</span>
 											</td>
 											<td className="px-4 py-2 flex gap-2 justify-center">
-												{(o.status === "pending" ||
-													o.status === "in_progress") && (
-														<>
-															<button
-																onClick={() =>
-																	handleAction(o.id, "complete")
-																}
-																disabled={actionLoading === o.id}
-																className="bg-[#094233] hover:bg-[#0b523e] text-white px-3 py-1 rounded-lg text-sm font-medium disabled:opacity-50"
-															>
-																{actionLoading === o.id
-																	? "Processing..."
-																	: "Complete"}
-															</button>
-															<button
-																onClick={() =>
-																	handleAction(o.id, "refund")
-																}
-																disabled={actionLoading === o.id}
-																className="bg-[rgba(252,204,98,1)] hover:bg-yellow-400 text-[#094233] px-3 py-1 rounded-lg text-sm font-medium disabled:opacity-50"
-															>
-																Refund
-															</button>
-														</>
-													)}
+												{(o.status === "pending" || o.status === "in_progress") && (
+													<>
+														<button
+															onClick={() => handleAction(o.id, "complete")}
+															disabled={actionLoading === o.id}
+															className="bg-[#094233] hover:bg-[#0b523e] text-white px-3 py-1 rounded-lg text-sm font-medium disabled:opacity-50"
+														>
+															{actionLoading === o.id ? "Processing..." : "Complete"}
+														</button>
+														<button
+															onClick={() => handleAction(o.id, "refund")}
+															disabled={actionLoading === o.id}
+															className="bg-[rgba(252,204,98,1)] hover:bg-yellow-400 text-[#094233] px-3 py-1 rounded-lg text-sm font-medium disabled:opacity-50"
+														>
+															Refund
+														</button>
+													</>
+												)}
+												<button
+													onClick={() => setSelectedOrder(o)}
+													className="bg-[#094233] hover:bg-[#0b523e] text-white px-3 py-1 rounded-lg text-sm font-medium"
+												>
+													Details
+												</button>
 											</td>
 										</tr>
 									))}
 								</tbody>
 							</table>
+						</div>
+					)}
+
+					{/* Modal */}
+					{selectedOrder && (
+						<div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+							<div className="bg-white rounded-2xl p-6 max-w-lg w-full relative">
+								<h2 className="text-xl font-semibold mb-4">Order Details</h2>
+								<button
+									onClick={() => setSelectedOrder(null)}
+									className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
+								>
+									✕
+								</button>
+								<div className="space-y-2 text-sm">
+									<p><strong>ID:</strong> {selectedOrder.id}</p>
+									<p><strong>Customer:</strong> {selectedOrder.customer_name}</p>
+									<p><strong>Company:</strong> {selectedOrder.company_name}</p>
+									<p><strong>Amount:</strong> ${parseFloat(selectedOrder.total_amount).toLocaleString()}</p>
+									<p><strong>Status:</strong> {selectedOrder.status}</p>
+									<p><strong>Description:</strong> {selectedOrder.description.String || "—"}</p>
+									<p>
+										<strong>Created At:</strong> {new Date(selectedOrder.created_at).toLocaleString()}
+									</p>
+									<p>
+										<strong>Updated At:</strong> {new Date(selectedOrder.updated_at).toLocaleString()}
+									</p>
+								</div>
+							</div>
 						</div>
 					)}
 				</div>
