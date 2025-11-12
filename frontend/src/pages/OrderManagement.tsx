@@ -43,7 +43,7 @@ export default function OrdersPage() {
 	};
 
 	return (
-		<div className="flex flex-col min-h-screen bg-gradient-to-b from-gray-100 to-gray-50">
+		<div className="flex flex-col min-h-screen bg-gradient-to-b from-gray-100 to-gray-50 font-[Inria_Serif]">
 			<Navbar />
 
 			<main className="flex flex-1 min-h-screen flex-col p-8 pt-6 overflow-y-auto">

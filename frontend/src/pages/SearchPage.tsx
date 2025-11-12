@@ -31,7 +31,7 @@ export function SearchPage() {
 	}, []);
 
 	return (
-		<div className="flex flex-col min-h-screen w-full overflow-x-hidden">
+		<div className="flex flex-col min-h-screen w-full overflow-x-hidden font-[Inria_Serif]">
 			<Navbar />
 			<main className="flex-1 min-h-screen p-6 max-w-5xl mx-auto w-full">
 				<h1 className="text-2xl font-semibold mb-4">Find Companies</h1>

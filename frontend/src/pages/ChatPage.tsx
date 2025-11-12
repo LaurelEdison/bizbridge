@@ -7,7 +7,7 @@ import { Navbar } from "../components/Navbar";
 export function ChatPage() {
 	const [selectedRoom, setSelectRoom] = useState<ChatRoomType | null>(null);
 	return (
-		<div className="flex flex-col h-screen overflow-hidden">
+		<div className="flex flex-col h-screen overflow-hidden font-[Inria_Serif]">
 			<Navbar />
 			<div className="flex h-screen">
 				<div className="w-1/3 border-r border-gray-200 p-4 overflow-y-auto">
