@@ -4,6 +4,7 @@ import type { KeyboardEvent } from "react";
 import { sendMessage } from "../api/chat";
 import { useAuthStore } from "../store/auth";
 import CreateOrderButton from "./CreateOrderButton";
+import defaultAvatar from "../assets/defaultpfp.jpg";
 
 export function ChatRoom({ chatRoomID, companyID, customerID }: { chatRoomID: string, companyID: string, customerID: string }) {
 	const { messages } = useChat(chatRoomID);
@@ -29,7 +30,11 @@ export function ChatRoom({ chatRoomID, companyID, customerID }: { chatRoomID: st
 						!isMine &&
 						(m.sender.photourl || m.sender.name) &&
 						(messages[idx - 1]?.sender.id !== m.sender.id);
-
+					const photoURL = m.sender.photourl
+					const safePhotoURL =
+						photoURL && photoURL.trim() !== ""
+							? photoURL
+							: "../assets/defaultpfp.jpg";
 					return (
 						<div
 							key={m.id}
@@ -37,11 +42,11 @@ export function ChatRoom({ chatRoomID, companyID, customerID }: { chatRoomID: st
 						>
 							{showAvatar ? (
 								<img
-									src={m.sender.photourl || "/default-avatar.png"}
+									src={safePhotoURL}
 									alt={m.sender.name}
 									className="w-8 h-8 rounded-full object-cover shadow-sm"
 									onError={(e) =>
-										((e.target as HTMLImageElement).src = "/default-avatar.png")
+										((e.target as HTMLImageElement).src = defaultAvatar)
 									}
 								/>
 							) : (
