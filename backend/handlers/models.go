@@ -297,15 +297,17 @@ func DatabaseEscrowToEscrow(dbEscrow database.EscrowAccount) EscrowAccount {
 }
 
 type Order struct {
-	ID          uuid.UUID      `json:"id"`
-	CustomerID  uuid.UUID      `json:"customer_id"`
-	CompanyID   uuid.UUID      `json:"company_id"`
-	EscrowID    uuid.NullUUID  `json:"escrow_id"`
-	TotalAmount string         `json:"total_amount"`
-	Status      string         `json:"status"`
-	Description sql.NullString `json:"description"`
-	CreatedAt   time.Time      `json:"created_at"`
-	UpdatedAt   time.Time      `json:"updated_at"`
+	ID           uuid.UUID      `json:"id"`
+	CustomerID   uuid.UUID      `json:"customer_id"`
+	CustomerName string         `json:"customer_name"`
+	CompanyName  string         `json:"company_name"`
+	CompanyID    uuid.UUID      `json:"company_id"`
+	EscrowID     uuid.NullUUID  `json:"escrow_id"`
+	TotalAmount  string         `json:"total_amount"`
+	Status       string         `json:"status"`
+	Description  sql.NullString `json:"description"`
+	CreatedAt    time.Time      `json:"created_at"`
+	UpdatedAt    time.Time      `json:"updated_at"`
 }
 
 func DatabaseOrderToOrder(dbOrder database.Order) Order {

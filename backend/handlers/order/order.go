@@ -75,7 +75,7 @@ func CreateOrder(h *handlers.Handlers) http.HandlerFunc {
 			apiutils.RespondWithError(h.ZapLogger, w, http.StatusBadRequest, "Failed to create escrow account")
 			return
 		}
-		order, err := h.DB.CreateOrder(r.Context(), database.CreateOrderParams{
+		dbOrder, err := h.DB.CreateOrder(r.Context(), database.CreateOrderParams{
 			ID:          uuid.New(),
 			CompanyID:   company.ID,
 			CustomerID:  customer.ID,
@@ -90,8 +90,12 @@ func CreateOrder(h *handlers.Handlers) http.HandlerFunc {
 			apiutils.RespondWithError(h.ZapLogger, w, http.StatusBadRequest, "Failed to create order")
 			return
 		}
+		order := handlers.DatabaseOrderToOrder(dbOrder)
+		order.CustomerName = customer.Name
+		order.CompanyName = company.Name
+
 		apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, map[string]any{
-			"order":  handlers.DatabaseOrderToOrder(order),
+			"order":  order,
 			"escrow": handlers.DatabaseEscrowToEscrow(escrow)},
 		)
 
@@ -131,14 +135,21 @@ func RefundOrder(h *handlers.Handlers) http.HandlerFunc {
 			return
 		}
 
-		updatedOrder, err := h.DB.RefundOrder(r.Context(), order.ID)
+		DBupdatedOrder, err := h.DB.RefundOrder(r.Context(), order.ID)
 		if err != nil {
 			apiutils.RespondWithError(h.ZapLogger, w, http.StatusBadRequest, "Could not update order")
 			return
 		}
 
+		updatedOrder := handlers.DatabaseOrderToOrder(DBupdatedOrder)
+
+		customer, _ := h.DB.GetCustomerByID(r.Context(), order.CustomerID)
+		company, _ := h.DB.GetCompanyByID(r.Context(), order.CompanyID)
+		updatedOrder.CustomerName = customer.Name
+		updatedOrder.CompanyName = company.Name
+
 		apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, map[string]any{
-			"order":  handlers.DatabaseOrderToOrder(updatedOrder),
+			"order":  updatedOrder,
 			"escrow": handlers.DatabaseEscrowToEscrow(updatedEscrow)},
 		)
 	}
@@ -177,14 +188,21 @@ func CompleteOrder(h *handlers.Handlers) http.HandlerFunc {
 			return
 		}
 
-		updatedOrder, err := h.DB.CompleteOrder(r.Context(), order.ID)
+		DBupdatedOrder, err := h.DB.CompleteOrder(r.Context(), order.ID)
 		if err != nil {
 			apiutils.RespondWithError(h.ZapLogger, w, http.StatusBadRequest, "Could not update order")
 			return
 		}
 
+		updatedOrder := handlers.DatabaseOrderToOrder(DBupdatedOrder)
+
+		customer, _ := h.DB.GetCustomerByID(r.Context(), order.CustomerID)
+		company, _ := h.DB.GetCompanyByID(r.Context(), order.CompanyID)
+		updatedOrder.CustomerName = customer.Name
+		updatedOrder.CompanyName = company.Name
+
 		apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, map[string]any{
-			"order":  handlers.DatabaseOrderToOrder(updatedOrder),
+			"order":  updatedOrder,
 			"escrow": handlers.DatabaseEscrowToEscrow(updatedEscrow)},
 		)
 
@@ -222,6 +240,12 @@ func GetOrders(h *handlers.Handlers) http.HandlerFunc {
 				return
 			}
 			Orders = handlers.DatabaseOrdersToOrders(dbOrders)
+		}
+		for i := range Orders {
+			customer, _ := h.DB.GetCustomerByID(r.Context(), Orders[i].CustomerID)
+			company, _ := h.DB.GetCompanyByID(r.Context(), Orders[i].CompanyID)
+			Orders[i].CustomerName = customer.Name
+			Orders[i].CompanyName = company.Name
 		}
 		apiutils.RespondWithJSON(h.ZapLogger, w, http.StatusOK, Orders)
 	}
