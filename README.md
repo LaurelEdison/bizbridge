@@ -2,8 +2,8 @@
 
 Bizbridge is a platform that connects Indonesian entrepreneurs with overseas customers. It facilitates partnerships and streamlines cross-border transactions with safe, fast, and reliable services.
 
-**Website:** [https://bizbridges.net](https://bizbridges.net/)  
-**Hosting:** HyperCloudHost
+**Website:** [https://bizbridges.net](https://bizbridges.net/)  (No longer hosted)
+**Hosting:** HyperCloudHost (No longer hosted)
 
 ## Features
 
